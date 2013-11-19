@@ -13,7 +13,7 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
-#include "src/dthttpd/server.hpp"
+#include "server3/server.hpp"
 
 int main(int argc, char* argv[])
 {
