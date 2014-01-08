@@ -2,25 +2,25 @@
 AUTOMAKE_OPTIONS = check-news dist-bzip2
 
 # Add doc, later.
-SUBDIRS = src server3
+SUBDIRS = src
 
-bin_PROGRAMS = dt testserver3
+bin_PROGRAMS = dt testEncode testParse
 
 #check_PROGRAMS = testdt
 
 #TESTS = testThing1
 
 dt_SOURCES = dt.cpp
-dt_LDADD = src/dthttpd/libdthttpd.la -lboost_thread
-# /usr/local/lib/libuv.a /usr/local/lib/http_parser.o
+dt_LDADD = src/ipp/libdtipp.la /usr/local/lib/libuv.a /usr/local/lib/http_parser.o
 
-# Boost HTTP asio example 3 server:
-testserver3_SOURCES = testserver3.cpp
-testserver3_LDADD = server3/libserver3.la -lboost_thread
+testEncode_SOURCES = testEncode.cpp
+testEncode_LDADD = src/ipp/libdtipp.la
+
+testParse_SOURCES = testParse.cpp
+testParse_LDADD = src/ipp/libdtipp.la
 
 INCLUDES = -I./usr/local/include
 
 CLEANFILES = *~
 
 MAINTAINERCLEANFILES = aclocal.m4 dt-*.tar.gz dt-*.tar.bz2 dt-*.diff
-
