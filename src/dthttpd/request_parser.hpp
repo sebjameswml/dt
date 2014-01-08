@@ -34,17 +34,16 @@ namespace server3 {
                 /// data is required. The InputIterator return value indicates how much of the
                 /// input has been consumed.
                 template <typename InputIterator>
-                boost::tuple<boost::tribool, InputIterator> parse(request& req,
-                                                                  InputIterator begin, InputIterator end)
+                boost::tuple<boost::tribool, InputIterator> parse (request& req, InputIterator begin, InputIterator end)
                         {
-                                while (begin != end)
-                                {
-                                        boost::tribool result = consume(req, *begin++);
-                                        if (result || !result)
-                                                return boost::make_tuple(result, begin);
+                                while (begin != end) {
+                                        boost::tribool result = consume (req, *begin++);
+                                        if (result || !result) {
+                                                return boost::make_tuple (result, begin);
+                                        }
                                 }
                                 boost::tribool result = boost::indeterminate;
-                                return boost::make_tuple(result, begin);
+                                return boost::make_tuple (result, begin);
                         }
 
         private:

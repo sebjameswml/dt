@@ -25,6 +25,7 @@ namespace server3 {
                 /// The status of the reply.
                 enum status_type
                 {
+                        continue_response = 100,
                         ok = 200,
                         created = 201,
                         accepted = 202,

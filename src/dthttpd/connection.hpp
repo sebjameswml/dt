@@ -12,7 +12,7 @@
 #define HTTP_SERVER3_CONNECTION_HPP
 
 #include <boost/asio.hpp>
-#include <boost/array.hpp>
+//#include <boost/array.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
@@ -58,7 +58,7 @@ namespace server3 {
                 request_handler& request_handler_;
 
                 /// Buffer for incoming data.
-                boost::array<char, 8192> buffer_;
+                std::array<char, 8192> buffer_;
 
                 /// The incoming request.
                 request request_;

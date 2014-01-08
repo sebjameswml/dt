@@ -11,6 +11,8 @@
 #include "request_parser.hpp"
 #include "request.hpp"
 
+#include <iostream>
+
 http::server3::request_parser::request_parser()
         : state_(method_start)
 {
@@ -25,6 +27,7 @@ http::server3::request_parser::reset()
 boost::tribool
 http::server3::request_parser::consume (request& req, char input)
 {
+        std::cerr << "Consuming input: '" << input << std::hex << "' (0x" << static_cast<unsigned int>(input) << ")\n";
         switch (state_) {
 
         case method_start:
