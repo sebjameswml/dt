@@ -45,3 +45,6 @@ stamp-h1
 *.log
 *.dbg
 
+dt
+testEncode
+testParse
