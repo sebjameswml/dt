@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = check-news dist-bzip2
 # Add doc, later.
 SUBDIRS = src
 
-bin_PROGRAMS = dt testEncode testParse
+bin_PROGRAMS = dt testEncode testParse testEventStorage
 
 #check_PROGRAMS = testdt
 
@@ -18,6 +18,9 @@ testEncode_LDADD = src/ipp/libdtipp.la
 
 testParse_SOURCES = testParse.cpp
 testParse_LDADD = src/ipp/libdtipp.la
+
+testEventStorage_SOURCES = testEventStorage.cpp
+testEventStorage_LDADD = src/log/libdtlog.la -luuid
 
 INCLUDES = -I./usr/local/include
 
