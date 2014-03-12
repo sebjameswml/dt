@@ -2,7 +2,7 @@ CLEANFILES = *~
 
 #SUBDIRS =
 
-INCLUDES = -I$(top_srcdir) -I$(top_builddir) $(UUID_CFLAGS)
+INCLUDES = -I$(top_srcdir) -I$(top_builddir) $(UUID_CFLAGS) -I/usr/include/mysql -I/usr/include/mysql++
 # $(GLIBMM_CFLAGS)
 
 lib_LTLIBRARIES = libdtlog.la

@@ -5,6 +5,7 @@
 
 #include "src/log/Event.h"
 #include "src/log/SyslogStorage.h"
+#include "src/log/MySQLStorage.h"
 
 using namespace std;
 using namespace dt::log;
@@ -28,7 +29,8 @@ int main() {
         e2.setDatastreamId("922");
         e2.setMessage ("Another event occurred");
 
-        e2.accept (s);
+        MySQLStorage s2;
+        e2.accept (s2);
 
         return 0;
 }

@@ -20,9 +20,9 @@ testParse_SOURCES = testParse.cpp
 testParse_LDADD = src/ipp/libdtipp.la
 
 testEventStorage_SOURCES = testEventStorage.cpp
-testEventStorage_LDADD = src/log/libdtlog.la -luuid
+testEventStorage_LDADD = src/log/libdtlog.la -luuid -lmysqlpp
 
-INCLUDES = -I./usr/local/include
+INCLUDES = -I./usr/local/include -I/usr/include/mysql -I/usr/include/mysql++
 
 CLEANFILES = *~
 
