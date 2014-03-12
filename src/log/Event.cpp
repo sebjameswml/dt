@@ -17,7 +17,7 @@ using namespace dt::log;
 
 Event::Event()
         : id("")
-        , jobId("")
+        , dataId("")
         , message("")
 #ifdef GOT_DT_ERROR_CODE
         , errorCode() // dt::errorCode

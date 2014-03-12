@@ -13,7 +13,7 @@ using namespace dt::log;
 int main() {
 
         Event e;
-        e.setJobId("12345");
+        e.setDataId("12345");
         e.setDatastreamName("input1");
         e.setDatastreamId("921");
         e.setMessage ("An event occurred");
@@ -24,7 +24,7 @@ int main() {
 
 
         Event e2;
-        e2.setJobId("12346");
+        e2.setDataId("12346");
         e2.setDatastreamName("input2");
         e2.setDatastreamId("922");
         e2.setMessage ("Another event occurred");

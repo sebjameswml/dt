@@ -39,9 +39,9 @@ SyslogStorage::store (Event* e)
         int level (LOG_NOTICE);
 #endif
         syslog (level,
-                "Event %s for data/job %s on datastream %s [%s]: %s",
+                "Event %s for data %s on datastream %s [%s]: %s",
                 e->getId().c_str(),
-                e->getJobId().c_str(),
+                e->getDataId().c_str(),
                 e->getDatastreamName().c_str(),
                 e->getDatastreamId().c_str(),
                 e->getMessage().c_str());

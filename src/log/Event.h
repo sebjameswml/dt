@@ -28,10 +28,9 @@ namespace dt {
                  * system.
                  *
                  * Each event has its own unique ID and is related to
-                 * a job/data in the data transport. Thus an audit
-                 * trail of events relating to a particular item can
-                 * be built up as a series of Event objects linked by
-                 * job/data ID.
+                 * data in the data transport. Thus an audit trail of
+                 * events relating to a particular item can be built
+                 * up as a series of Event objects linked by data ID.
                  */
                 class Event
                 {
@@ -71,19 +70,19 @@ namespace dt {
                         }
 
                         /*!
-                         * \brief Set the associated data/job ID.
-                         * @param theJobId The new value of this->jobId.
+                         * \brief Set the associated data ID.
+                         * @param theDataId The new value of this->dataId.
                          */
-                        void setJobId (const std::string& theJobId) {
-                                this->jobId = theJobId;
+                        void setDataId (const std::string& theDataId) {
+                                this->dataId = theDataId;
                         }
 
                         /*!
-                         * \brief Get the associated data/job ID.
-                         * @return The value of this->jobId.
+                         * \brief Get the associated data ID.
+                         * @return The value of this->dataId.
                          */
-                        std::string getJobId (void) const {
-                                return this->jobId;
+                        std::string getDataId (void) const {
+                                return this->dataId;
                         }
 
                         /*!
@@ -229,8 +228,8 @@ namespace dt {
 
                         /*! \brief The ID of this event. */
                         std::string id;
-                        /*! \brief The associated data/job ID. */
-                        std::string jobId;
+                        /*! \brief The associated data ID. */
+                        std::string dataId;
                         /*! \brief The message for this event. */
                         std::string message;
 #ifdef GOT_DT_ERROR_CODE

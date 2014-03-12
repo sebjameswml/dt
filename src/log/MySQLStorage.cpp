@@ -60,7 +60,7 @@ MySQLStorage::store (Event* e)
                       << "( `time`"
                       << ", `ms`"
                       << ", `eventId`"
-                      << ", `jobId`"
+                      << ", `dataId`"
                       << ", `message`"
 #ifdef GOT_DT_ERROR_CODE
                       << ", `errorCode`"
@@ -77,7 +77,7 @@ MySQLStorage::store (Event* e)
                       << " ( FROM_UNIXTIME(" << e->getTime().tv_sec << ")"
                       << " , '" << e->getTime().tv_usec/1000
                       << "', '" << e->getId() // SQL safe? (uuid)
-                      << "', '" << e->getJobId() // SQL safe? (uuid)
+                      << "', '" << e->getDataId() // SQL safe? (uuid)
                       << "', '" << e->getMessage() // Need to escape
 #ifdef GOT_DT_ERROR_CODE
                       << "', '" << e->getErrorCode() // SQL safe (int)
@@ -116,7 +116,7 @@ MySQLStorage::init (void)
         vector<pair<string, string> > fields;
         fields.push_back (make_pair ("id",             "int(10) unsigned NOT NULL auto_increment"));
         fields.push_back (make_pair ("eventId",        "varchar(255) collate latin1_bin NOT NULL default ''"));
-        fields.push_back (make_pair ("jobId",          "varchar(255) collate latin1_bin NOT NULL default ''"));
+        fields.push_back (make_pair ("dataId",         "varchar(255) collate latin1_bin NOT NULL default ''"));
         fields.push_back (make_pair ("message",        "varchar(255) collate latin1_bin NOT NULL default ''"));
         fields.push_back (make_pair ("errorCode",      "int(10) unsigned NOT NULL default 0"));
         fields.push_back (make_pair ("datastreamId",   "varchar(255) collate latin1_bin NOT NULL default ''"));
