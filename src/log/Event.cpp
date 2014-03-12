@@ -30,6 +30,8 @@ Event::Event()
 #endif
         , pid (getpid())
 {
+        // Initialise timeval struct
+        gettimeofday (&time, NULL);
         this->generateId();
 }
 

@@ -12,6 +12,8 @@
 # pragma interface
 #endif
 
+#include <sys/time.h>
+
 #include <string>
 
 #include "Storage.h"
@@ -199,6 +201,23 @@ namespace dt {
                         pid_t getPid (void) const {
                                 return this->pid;
                         }
+
+                        /*!
+                         * \brief Set the time for this event.
+                         * @param theTime The new value of this->time.
+                         */
+                        void setTime (struct timeval theTime) {
+                                this->time = theTime;
+                        }
+
+                        /*!
+                         * \brief Get the time for this event.
+                         * @return The value of this->time.
+                         */
+                        struct timeval getTime (void) const {
+                                return this->time;
+                        }
+
                         //@}
 
                 private:
@@ -230,6 +249,9 @@ namespace dt {
 #endif
                         /*! \brief The process ID. */
                         pid_t pid;
+
+                        /*! \brief The time of the event. */
+                        struct timeval time;
 
                 };
 

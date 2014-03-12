@@ -54,10 +54,11 @@ MySQLStorage::store (Event* e)
         try {
                 // Store the event to the database.
                 this->dbCheck();
-                Query query = this->conn.query();
+                Query query (this->conn.query());
 
                 query << "INSERT INTO `log` "
-                      << "( `date`"
+                      << "( `time`"
+                      << ", `ms`"
                       << ", `eventId`"
                       << ", `jobId`"
                       << ", `message`"
@@ -73,8 +74,9 @@ MySQLStorage::store (Event* e)
                       << ", `pid`"
                       << ")"
                       << " VALUES "
-                      << " ( NOW()"
-                      << " , '" << e->getId() // SQL safe? (uuid)
+                      << " ( FROM_UNIXTIME(" << e->getTime().tv_sec << ")"
+                      << " , '" << e->getTime().tv_usec/1000
+                      << "', '" << e->getId() // SQL safe? (uuid)
                       << "', '" << e->getJobId() // SQL safe? (uuid)
                       << "', '" << e->getMessage() // Need to escape
 #ifdef GOT_DT_ERROR_CODE
@@ -122,7 +124,8 @@ MySQLStorage::init (void)
         fields.push_back (make_pair ("hostname",       "varchar(255) collate latin1_bin NOT NULL default ''"));
         fields.push_back (make_pair ("logLevel",       "int(10) unsigned NOT NULL default 0")); // could be enum?
         fields.push_back (make_pair ("pid",            "int(10) unsigned NOT NULL default 0"));
-        fields.push_back (make_pair ("date",           "DATETIME NOT NULL"));
+        fields.push_back (make_pair ("time",           "DATETIME NOT NULL"));
+        fields.push_back (make_pair ("ms",             "int(10) unsigned NOT NULL default 0"));
 
         string table (MySQLStorage::defaultDbTable);
         try {
