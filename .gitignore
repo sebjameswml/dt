@@ -49,3 +49,4 @@ dt
 testEncode
 testParse
 testEventStorage
+testDatastream

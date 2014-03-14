@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = check-news dist-bzip2
 # Add doc, later.
 SUBDIRS = src
 
-bin_PROGRAMS = dt testEncode testParse testEventStorage
+bin_PROGRAMS = dt testEncode testParse testEventStorage testDatastream
 
 #check_PROGRAMS = testdt
 
@@ -22,7 +22,11 @@ testParse_LDADD = src/ipp/libdtipp.la
 testEventStorage_SOURCES = testEventStorage.cpp
 testEventStorage_LDADD = src/log/libdtlog.la -luuid -lmysqlpp
 
-INCLUDES = -I./usr/local/include -I/usr/include/mysql -I/usr/include/mysql++
+testDatastream_SOURCES = testDatastream.cpp
+testDatastream_LDADD = src/libdt.la $(XMLPP_LIBS) -luuid -lmagic \
+                      -lfutil -lcurl $(JSONCPP_LIBS) -lwmlppcommon
+
+INCLUDES = -I./usr/local/include -I/usr/include/mysql -I/usr/include/mysql++ $(JSONCPP_CFLAGS)
 
 CLEANFILES = *~
 

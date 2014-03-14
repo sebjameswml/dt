@@ -2,7 +2,7 @@ CLEANFILES = *~
 
 SUBDIRS = ipp log
 
-INCLUDES = -I$(top_srcdir) -I$(top_builddir)
+INCLUDES = -I$(top_srcdir) -I$(top_builddir) $(JSONCPP_CFLAGS)
 # $(GLIBMM_CFLAGS) $(UUID_CFLAGS)
 
 lib_LTLIBRARIES = libdt.la
