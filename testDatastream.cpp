@@ -19,10 +19,24 @@ int main() {
         cout << "Datastream name: " << ds.getName() << endl;
         cout << endl;
 
-        Datastream ds2 ("12345");
+        Datastream ds2 ("1300");
 
         cout << "Datastream ID: " << ds2.getId() << endl;
         cout << "Datastream name: " << ds2.getName() << endl;
+
+        ds2.setName ("kyo1300");
+
+        list<string> filters;
+        filters.push_back ("/usr/lib/cups/filter/wmlkeyval");
+        filters.push_back ("/usr/lib/cups/filter/wmlpassthru");
+//        filters.push_back ("/usr/lib/cups/filter/wmlpdf");
+
+        ds2.setFilters (filters);
+
+        Data d ("test_df.xml");
+
+        ds2.process (d);
+        ds2.write();
 
         DBGCLOSE();
         return 0;

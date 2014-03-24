@@ -14,9 +14,10 @@
 
 #include <list>
 
+#include <futil/Process.h>
 #include <wmlppcommon/WmlSettings.h>
 
-#include "Filter.h"
+#include "Data.h"
 
 namespace dt {
 
@@ -50,6 +51,24 @@ namespace dt {
                 virtual ~Datastream();
 
                 /*!
+                 * \brief Store the datastream settings.
+                 */
+                void write (void);
+
+                /*!
+                 * \brief Process the passed in data.
+                 *
+                 * \remark Need to feedback outcome to caller in some
+                 * way.
+                 */
+                void process (dt::Data& data);
+
+                /*!
+                 * \name Private attribute accessor methods
+                 */
+                //@{
+
+                /*!
                  * \brief Get the id of this datastream.
                  * @return The value of this->id.
                  */
@@ -81,6 +100,24 @@ namespace dt {
                         this->name = s;
                 }
 
+                /*!
+                 * \brief Set the list of filters for this datastream.
+                 * @param l The new value of this->filters.
+                 */
+                void setFilters (const std::list<std::string>& f) {
+                        this->filters = f;
+                }
+
+                /*!
+                 * \brief Get the filter output for this datastream.
+                 * @return The value of this->filterOutput.
+                 */
+                std::string getFilterOutput (void) const {
+                        return this->filterOutput;
+                }
+
+                //@}
+
         private:
 
                 /*!
@@ -88,17 +125,41 @@ namespace dt {
                  */
                 void initialise (void);
 
-                /*! \brief Unique ID */
+                /*! \brief The unique ID of this datastream. */
                 std::string id;
 
-                /*! \brief Name */
+                /*! \brief The name of this datastream. */
                 std::string name;
 
-                /*! \brief The list of filters */
-                std::list<Filter> filters;
+                /*!
+                 * \brief The list of filters to be applied by this
+                 * datastream.
+                 *
+                 * If this list is empty, automatic filter selection
+                 * should be carried out, on the basis of the type of
+                 * input data and the selection rules indicated by
+                 * mime.types and mime.convs (as in CUPS).
+                 */
+                std::list<std::string> filters;
 
-                /*! \brief Settings object */
+                /*! \brief Settings object. */
                 wml::WmlSettings settings;
+
+                /*!
+                 * \brief Object for processing data through filters.
+                 */
+                wml::Process p;
+
+                /*!
+                 * \brief Storage for filter output.
+                 */
+                std::string filterOutput;
+
+                /*!
+                 * \brief Iterator to the last filter run by this
+                 * datastream.
+                 */
+                std::list<std::string>::const_iterator lastFilter;
 
         };
 } // dt namespace

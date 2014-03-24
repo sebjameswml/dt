@@ -7,8 +7,8 @@ INCLUDES = -I$(top_srcdir) -I$(top_builddir) $(JSONCPP_CFLAGS)
 
 lib_LTLIBRARIES = libdt.la
 
-libdt_la_SOURCES = Datastream.cpp Filter.cpp
+libdt_la_SOURCES = Datastream.cpp Filter.cpp Data.cpp FilterProcessCallbacks.cpp
 
 libdt_la_LDFLAGS = -version-info 3:0:0
 
-pkginclude_HEADERS = Datastream.h Filter.h
+pkginclude_HEADERS = Datastream.h Filter.h Data.h FilterProcessCallbacks.h

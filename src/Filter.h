@@ -12,6 +12,8 @@
 # pragma interface
 #endif
 
+#include <string>
+
 namespace dt {
 
         /*!
@@ -28,7 +30,7 @@ namespace dt {
                 /*!
                  * Constructor
                  */
-                Filter();
+                Filter (const std::string& path);
 
                 /*!
                  * Destructor
@@ -37,7 +39,33 @@ namespace dt {
                  */
                 virtual ~Filter();
 
+                /*!
+                 * \name Private attribute accessor methods
+                 */
+                //@{
+
+                /*!
+                 * \brief Get the path of this filter.
+                 * @return The value of this->path.
+                 */
+                std::string getPath (void) const {
+                        return this->path;
+                }
+
+                /*!
+                 * \brief Set the path of this filter.
+                 * @param s The new value of this->path.
+                 */
+                void setPath (const std::string& s) {
+                        this->path = s;
+                }
+
+                //@}
+
         private:
+
+                /*! \brief Path */
+                std::string path;
 
         };
 } // dt namespace

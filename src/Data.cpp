@@ -2,17 +2,17 @@
 #  pragma implementation
 #endif
 
-#include "Filter.h"
+#include "Data.h"
 
 using namespace std;
 using namespace dt;
 
-Filter::Filter(const string& thePath)
-        : path (thePath)
+Data::Data(const string& theId)
+        : id (theId)
 {
 }
 
-Filter::~Filter()
+Data::~Data()
 {
 }
 
