@@ -174,13 +174,14 @@ fi
 
 dnl A 2013 version of autoconf is required for this test for C++-11 features...
 dnl AX_CXX_COMPILE_STDCXX_11(noext,mandatory)
+
+dnl ... so add our C++-11 CXX flags here:
+CXXFLAGS="$CXXFLAGS -std=gnu++0x"
+
 dnl pkg-config to check for libxml++-2.6. Ubuntu 10.04 has 2.30.0, wmlpp2 has 2.26.1.
 PKG_CHECK_MODULES(XMLPP, libxml++-2.6 >= 2.26.1)
 dnl check for jsoncpp
 PKG_CHECK_MODULES(JSONCPP, jsoncpp >= 0.6.0)
-
-dnl ... so add our C++-11 CXX flags here:
-CXXFLAGS="$CXXFLAGS -std=gnu++0x"
 
 dnl We need librt for clock_gettime:
 LIBS="$LIBS -lrt"
