@@ -47,12 +47,12 @@ void
 FilterProcessCallbacks::readyReadStandardOutputSignal (void)
 {
         DBG ("Called");
-        //this->parent->filterStdoutReady();
+        this->parent->filterStdoutReady();
 }
 
 void
 FilterProcessCallbacks::readyReadStandardErrorSignal (void)
 {
         DBG ("Called");
-        //this->parent->filterStderrReady();
+        this->parent->filterStderrReady();
 }

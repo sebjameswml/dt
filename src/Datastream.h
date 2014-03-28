@@ -59,9 +59,19 @@ namespace dt {
                  * \brief Process the passed in data.
                  *
                  * \remark Need to feedback outcome to caller in some
-                 * way.
+                 * way? Simply log any related events?
                  */
                 void process (dt::Data& data);
+
+                /*!
+                 * \brief Respond to stdout from a filter process.
+                 */
+                void filterStdoutReady (void);
+
+                /*!
+                 * \brief Respond to stderr from a filter process.
+                 */
+                void filterStderrReady (void);
 
                 /*!
                  * \name Private attribute accessor methods
@@ -108,14 +118,6 @@ namespace dt {
                         this->filters = f;
                 }
 
-                /*!
-                 * \brief Get the filter output for this datastream.
-                 * @return The value of this->filterOutput.
-                 */
-                std::string getFilterOutput (void) const {
-                        return this->filterOutput;
-                }
-
                 //@}
 
         private:
@@ -124,6 +126,13 @@ namespace dt {
                  * \brief Initialise this datastream.
                  */
                 void initialise (void);
+
+                /*!
+                 * \brief Log an event for the specified data.
+                 *
+                 * \todo Enable specification of log level.
+                 */
+                void logEvent (dt::Data& data, const std::string& msg);
 
                 /*! \brief The unique ID of this datastream. */
                 std::string id;
@@ -154,6 +163,11 @@ namespace dt {
                  * \brief Storage for filter output.
                  */
                 std::string filterOutput;
+
+                /*!
+                 * \brief Storage for filter error.
+                 */
+                std::string filterError;
 
                 /*!
                  * \brief Iterator to the last filter run by this

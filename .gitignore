@@ -50,3 +50,4 @@ testEncode
 testParse
 testEventStorage
 testDatastream
+testProcessData

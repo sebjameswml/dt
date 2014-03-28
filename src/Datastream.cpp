@@ -7,12 +7,17 @@
 #include "config.h"
 #include <futil/WmlDbg.h>
 
+#include "src/log/Event.h"
+#include "src/log/SyslogStorage.h"
+#include "src/log/MySQLStorage.h"
+
 #include "Datastream.h"
 #include "Filter.h"
 #include "FilterProcessCallbacks.h"
 
 using namespace std;
 using namespace dt;
+using namespace dt::log;
 using namespace wml;
 
 Datastream::Datastream()
@@ -68,22 +73,22 @@ Datastream::process (Data& data)
                 // CUPS.
         }
 
-        // Do we need callbacks for the filter process?
+        // Callbacks for the filter process
         FilterProcessCallbacks cb (this);
         this->p.setCallbacks (&cb);
+
+        // Clear storage for stdout/stderr.
+        this->filterOutput = "";
+        this->filterError = "";
 
         list<string> args;
         args.push_back (this->name);
         args.push_back (data.getId());
-        args.push_back ("dsuser"); //data.getUser());
-        args.push_back ("data"); // data.getTitle());
-        args.push_back ("1"); // data.getCopies());
+        args.push_back (data.getUser());
+        args.push_back (data.getName());
+        args.push_back (data.getCopiesStr());
         args.push_back ("0"); // data.getOptions());
-        args.push_back ("/tmp/" + data.getId()); // data.getOptions());
-
-        // This doesn't read properly in the filter program:
-        // string ifp ("/tmp/" + data.getId());
-        // freopen (ifp.c_str(), "r", stdin);
+        args.push_back (data.getPath());
 
         // Apply each filter in turn until either we come to the end
         // of the chain or one of the filters does not create any
@@ -100,51 +105,66 @@ Datastream::process (Data& data)
 
                 // Apply the filter
                 string path (f.getPath());
+
                 this->p.reset (true); // keepCallbacks = true
+
                 this->p.start (path, args);
                 if (!this->p.waitForStarted()) {
                         throw runtime_error ("Process didn't start");
                 }
 
-                // Write previous filter output to process stdin.
                 if (!this->filterOutput.empty()) {
+                        // Got output from previous filter, send this
+                        // to process stdin.
                         this->p.writeIn (this->filterOutput);
+                        this->p.closeWritingEnd();
                 }
+
+                // Clear storage for stdout/stderr.
+                this->filterOutput = "";
+                this->filterError = "";
 
                 while (this->p.running()) {
                         usleep (1000);
                         this->p.probeProcess();
                 }
 
-                // Do we need to save off standard output every time a
-                // 'standard output ready' signal is received?
-                this->filterOutput = this->p.readAllStandardOutput();
-                gotOutput = !this->filterOutput.empty();
+                // Get any remaining data on stdout/stderr.
+                this->filterStdoutReady();
+                this->filterStderrReady();
 
+                gotOutput = (!this->filterOutput.empty());
                 if (gotOutput) {
-                        string::size_type pos (path.rfind("/"));
-                        string tfp ("/tmp/" + data.getId());
-                        tfp += "_" + path.substr(pos+1);
+                        // Write to the filter output file.
+                        // TODO use DTDATA path (runtime configurable)
+                        // and f.getName() (and/or count) for file path.
+                        string tfp = "/tmp/" + data.getId()
+                                + "-" + this->name
+                                + "." + path.substr(path.rfind("/")+1);
 
-                        ofstream fout (tfp.c_str());
-                        fout << this->filterOutput;
-                        fout.close();
+                        fstream f (tfp.c_str(), ios::out|ios::trunc);
+                        f << this->filterOutput;
+                        f.close();
 
-                        DBG ("Wrote filter output to " << tfp);
+                        data.setPath (tfp);
 
-                        // Replace original file path arg with new version
-                        args.pop_back();
-                        args.push_back (tfp);
+                        stringstream ss;
+                        ss << "Wrote filter output to " << tfp;
+                        this->logEvent (data, ss.str());
 
-                } else {
-                        DBG ("No output from filter " << path);
+                        if (args.size() > 6) {
+                                // Remove original file path arg -
+                                // we'll pass data via stdin for
+                                // subsequent filters.
+                                args.pop_back();
+                        }
                 }
 
-                string err (this->p.readAllStandardError());
-                if (!err.empty()) {
+                if (!this->filterError.empty()) {
                         stringstream ee;
                         ee << "The filter '" << f.getPath()
-                           << "' returned the following on stderr: '" << err << "'";
+                           << "' returned the following on stderr: '" << this->filterError << "'";
+                        this->logEvent (data, ee.str());
                         throw runtime_error (ee.str());
                 }
 
@@ -153,10 +173,42 @@ Datastream::process (Data& data)
 
         if (!gotOutput) {
                 // No output from filter chain
-                // DBG ("No output from filter '" << *this->lastFilter << "'");
+                stringstream ss;
+                ss << "No output from filter '" << *this->lastFilter << "'";
+                this->logEvent (data, ss.str());
         }
 
         if (autoFilterMode) {
                 this->filters.clear();
         }
+}
+
+void
+Datastream::filterStdoutReady (void)
+{
+        this->filterOutput += this->p.readAllStandardOutput();
+}
+
+void
+Datastream::filterStderrReady (void)
+{
+        this->filterError += this->p.readAllStandardError();
+}
+
+void
+Datastream::logEvent (Data& data, const string& msg)
+{
+        DBG ("Logging event for data " << data.getId() << " on datastream "
+             << this->name << ": " << msg);
+#ifdef SWITCH_ON_LOGGING
+        Event e;
+        e.setDataId (data.getId());
+        e.setDatastreamName (this->name);
+        e.setDatastreamId (this->id);
+        e.setMessage (msg);
+
+        // For each storage type...
+        MySQLStorage s;
+        e.accept (s);
+#endif
 }

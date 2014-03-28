@@ -7,9 +7,14 @@
 using namespace std;
 using namespace dt;
 
-Data::Data(const string& theId)
-        : id (theId)
+Data::Data (const string& dataId)
+        : id (dataId)
+        , name ("")
+        , user ("")
+        , copies (1)
 {
+        // TODO data in user configurable location
+        this->path = "/tmp/" + this->id;
 }
 
 Data::~Data()

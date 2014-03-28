@@ -2,7 +2,7 @@ CLEANFILES = *~
 
 SUBDIRS = ipp log
 
-INCLUDES = -I$(top_srcdir) -I$(top_builddir) $(JSONCPP_CFLAGS)
+INCLUDES = -I$(top_srcdir) -I$(top_builddir) $(JSONCPP_CFLAGS) -I/usr/include/mysql -I/usr/include/mysql++
 # $(GLIBMM_CFLAGS) $(UUID_CFLAGS)
 
 lib_LTLIBRARIES = libdt.la

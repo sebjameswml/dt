@@ -28,14 +28,11 @@ int main() {
 
         list<string> filters;
         filters.push_back ("/usr/lib/cups/filter/wmlkeyval");
-        filters.push_back ("/usr/lib/cups/filter/wmlpassthru");
-//        filters.push_back ("/usr/lib/cups/filter/wmlpdf");
+//       filters.push_back ("/usr/lib/cups/filter/wmlpassthru");
+        filters.push_back ("/usr/lib/cups/filter/wmlpdf");
 
         ds2.setFilters (filters);
 
-        Data d ("test_df.xml");
-
-        ds2.process (d);
         ds2.write();
 
         DBGCLOSE();
