@@ -3,6 +3,7 @@
 #endif
 
 #include <sstream>
+#include <fstream>
 
 #include "config.h"
 #include <futil/WmlDbg.h>
@@ -81,6 +82,17 @@ Datastream::process (Data& data)
         this->filterOutput = "";
         this->filterError = "";
 
+        ifstream from (data.getPath());
+        if (from.is_open()) {
+                char buf[64];
+                while (!from.eof()) {
+                        from.read (buf, 63);
+                        this->filterOutput.append (buf, from.gcount());
+                }
+        } else {
+                throw runtime_error ("Couldn't open input data file");
+        }
+
         list<string> args;
         args.push_back (this->name);
         args.push_back (data.getId());
@@ -88,7 +100,6 @@ Datastream::process (Data& data)
         args.push_back (data.getName());
         args.push_back (data.getCopiesStr());
         args.push_back ("0"); // data.getOptions());
-        args.push_back (data.getPath());
 
         // Apply each filter in turn until either we come to the end
         // of the chain or one of the filters does not create any
