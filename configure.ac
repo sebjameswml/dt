@@ -42,6 +42,9 @@ AC_STRUCT_TM
 dnl Checks for endianness
 AC_C_BIGENDIAN
 
+dnl Check for strdup: (Tam)
+AC_CHECK_FUNC(strdup, AC_DEFINE(HAVE_STRDUP, 1, [Define if strdup symbol is available]))
+
 dnl Checks for word sizes
 AC_CHECK_SIZEOF(char)
 AC_CHECK_SIZEOF(unsigned char)
@@ -188,6 +191,6 @@ LIBS="$LIBS -lrt"
 
 dnl Always output certain files
 dnl omit for now: doc/Makefile doc/Doxyfile
-AC_CONFIG_FILES([Makefile src/Makefile src/ipp/Makefile src/log/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile src/ipp/Makefile src/log/Makefile src/dtmime/Makefile])
 
 AC_OUTPUT

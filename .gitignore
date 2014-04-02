@@ -51,3 +51,4 @@ testParse
 testEventStorage
 testDatastream
 testProcessData
+testCupsFilters

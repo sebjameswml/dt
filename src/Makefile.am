@@ -1,6 +1,6 @@
 CLEANFILES = *~
 
-SUBDIRS = ipp log
+SUBDIRS = ipp log dtmime
 
 INCLUDES = -I$(top_srcdir) -I$(top_builddir) $(JSONCPP_CFLAGS) -I/usr/include/mysql -I/usr/include/mysql++
 # $(GLIBMM_CFLAGS) $(UUID_CFLAGS)
