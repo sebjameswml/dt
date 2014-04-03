@@ -23,11 +23,13 @@ testEventStorage_SOURCES = testEventStorage.cpp
 testEventStorage_LDADD = src/log/libdtlog.la -luuid -lmysqlpp
 
 testDatastream_SOURCES = testDatastream.cpp
-testDatastream_LDADD = src/libdt.la src/log/libdtlog.la $(XMLPP_LIBS) -luuid -lmagic \
+testDatastream_LDADD = src/libdt.la src/log/libdtlog.la src/dtmime/libdtmime.la \
+                      $(XMLPP_LIBS) -luuid -lmagic \
                       -lfutil -lcurl $(JSONCPP_LIBS) -lwmlppcommon -lmysqlpp
 
 testProcessData_SOURCES = testProcessData.cpp
-testProcessData_LDADD = src/libdt.la src/log/libdtlog.la $(XMLPP_LIBS) -luuid -lmagic \
+testProcessData_LDADD = src/libdt.la src/log/libdtlog.la src/dtmime/libdtmime.la \
+                      $(XMLPP_LIBS) -luuid -lmagic \
                       -lfutil -lcurl $(JSONCPP_LIBS) -lwmlppcommon -lmysqlpp
 
 testCupsFilters_SOURCES = testCupsFilters.cpp

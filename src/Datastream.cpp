@@ -12,6 +12,8 @@
 #include "src/log/SyslogStorage.h"
 #include "src/log/MySQLStorage.h"
 
+#include "src/dtmime/mime.h"
+
 #include "Datastream.h"
 #include "Filter.h"
 #include "FilterProcessCallbacks.h"
@@ -72,6 +74,7 @@ Datastream::process (Data& data)
                 // Identify the input data and set up the list of
                 // filters based on mime.types and mime.convs, as in
                 // CUPS.
+                this->populateFilters (data);
         }
 
         // Callbacks for the filter process
@@ -191,6 +194,78 @@ Datastream::process (Data& data)
 
         if (autoFilterMode) {
                 this->filters.clear();
+        }
+}
+
+void
+Datastream::populateFilters (Data& data)
+{
+        char          super[MIME_MAX_SUPER],  /* Super-type name */
+                      type[MIME_MAX_TYPE];    /* Type name */
+        int           compression;            /* Compression of file */
+        int           cost;                   /* Cost of filters */
+        mime_t        *mime;                  /* MIME database */
+        mime_type_t   *src,                   /* Source type */
+                      *dst;                   /* Destination type */
+        cups_array_t  *mime_filters;          /* Filters for the file */
+        mime_filter_t *filter;                /* Current filter */
+
+        mime        = NULL;
+        src         = NULL;
+        dst         = NULL;
+
+        // TODO make this user configurable:
+        string filterDir ("/usr/lib/cups/filter");
+
+        if (!mime) {
+                mime = mimeLoad("/etc/dt/mime", filterDir.c_str());
+        }
+
+        string file (data.getPath().c_str());
+
+        src = mimeFileType(mime, file.c_str(), NULL, &compression);
+
+        if (src) {
+                DBG (file << ": " << src->super << "/" << src->type
+                     << (compression ? " (gzipped)" : ""));
+        } else if ((src = mimeType(mime, "application", "octet-stream")) != NULL) {
+                DBG (file << ": application/octet-stream");
+        } else {
+                DBG (file << ": unknown");
+                if (mime)
+                        mimeDelete(mime);
+                return;
+        }
+
+        // TODO destination file type is an aspect of the
+        // datastream so this should be
+        // this->getDestFileType() or whatever.
+        string dest ("application/vnd.wml-pdf");
+
+        sscanf(dest.c_str(), "%15[^/]/%31s", super, type);
+        dst = mimeType(mime, super, type);
+
+        mime_filters = mimeFilter(mime, src, dst, &cost);
+
+        if (!mime_filters) {
+                DBG ("No filters to convert from " << src->super << "/"
+                     << src->type << " to " << dst->super << "/" << dst->type);
+        } else {
+                filterDir += "/";
+                filter = (mime_filter_t *)cupsArrayFirst(mime_filters);
+                this->filters.push_back (filterDir + filter->filter);
+
+                for (filter = (mime_filter_t *)cupsArrayNext(mime_filters);
+                     filter;
+                     filter = (mime_filter_t *)cupsArrayNext(mime_filters)) {
+                        this->filters.push_back (filterDir + filter->filter);
+                }
+
+                cupsArrayDelete(mime_filters);
+        }
+
+        if (mime) {
+                mimeDelete(mime);
         }
 }
 

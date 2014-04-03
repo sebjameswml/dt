@@ -128,6 +128,13 @@ namespace dt {
                 void initialise (void);
 
                 /*!
+                 * \brief Populate the list of filters according to
+                 * the specified input data and the destination mime
+                 * type for this datastream.
+                 */
+                void populateFilters (dt::Data& data);
+
+                /*!
                  * \brief Log an event for the specified data.
                  *
                  * \todo Enable specification of log level.

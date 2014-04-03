@@ -10,19 +10,31 @@ std::ofstream DBGSTREAM;
 using namespace std;
 using namespace dt;
 
-int main() {
+int main (int argc, char** argv) {
+
+        if (argc < 2) {
+                cerr << "Usage: testProcessData file [filter1 filter2]\n";
+                cerr << "  The file should contain the input data to be passed to the filter chain\n";
+                cerr << "  Optionally, filters through which to pass the file may be specified\n";
+                return -1;
+        }
 
         DBGOPEN ("./testProcessData.dbg");
 
-        Data d ("test_df.xml");
+        Data d (argv[1]);
         d.setUser ("dsuser");
         d.setName ("mydata");
         d.setTargetDatastream ("1300");
 
         list<string> filters;
-        filters.push_back ("/usr/lib/cups/filter/wmlkeyval");
-//       filters.push_back ("/usr/lib/cups/filter/wmlpassthru");
-        filters.push_back ("/usr/lib/cups/filter/wmlpdf");
+        if (argc > 2) {
+                string filterDir ("/usr/lib/cups/filter/");
+                int i(2);
+                while (i < argc) {
+                        filters.push_back (filterDir + argv[i]);
+                        ++i;
+                }
+        }
 
         Datastream ds (d.getTargetDatastream());
 
