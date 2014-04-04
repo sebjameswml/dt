@@ -27,8 +27,8 @@
  * Include necessary headers...
  */
 
-#include <cups/string-private.h>
-#include <cups/debug-private.h>
+#include "../dtcups/string-private.h"
+#include "../dtcups/debug-private.h"
 #include <locale.h>
 #include "mime.h"
 

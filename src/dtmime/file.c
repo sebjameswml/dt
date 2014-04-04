@@ -22,8 +22,8 @@
  * Include necessary headers...
  */
 
-#include "cups/file-private.h"
-#include "cups/file.h"
+#include "../dtcups/file-private.h"
+#include "../dtcups/file.h"
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -1089,10 +1089,11 @@ cupsFileOpen(const char *filename,	/* I - Name of file */
 {
   cups_file_t	*fp;			/* New CUPS file */
   int		fd;			/* File descriptor */
+#ifdef ENABLE_SOCKET_MODE
   char		hostname[1024],		/* Hostname */
 		*portname;		/* Port "name" (number or service) */
   http_addrlist_t *addrlist;		/* Host address list */
-
+#endif
 
   DEBUG_printf(("cupsFileOpen(filename=\"%s\", mode=\"%s\")", filename,
                 mode));

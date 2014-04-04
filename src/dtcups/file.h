@@ -73,37 +73,6 @@ extern "C" {
 typedef struct _cups_file_s cups_file_t;/**** CUPS file type ****/
 
 
-// This is copied from http.h: (Tam)
-typedef union _http_addr_u		/**** Socket address union, which
-					 **** makes using IPv6 and other
-					 **** address types easier and
-					 **** more portable. @since CUPS 1.2/OS X 10.5@
-					 ****/
-{
-  struct sockaddr	addr;		/* Base structure for family value */
-  struct sockaddr_in	ipv4;		/* IPv4 address */
-#ifdef AF_INET6
-  struct sockaddr_in6	ipv6;		/* IPv6 address */
-#endif /* AF_INET6 */
-#ifdef AF_LOCAL
-  struct sockaddr_un	un;		/* Domain socket file */
-#endif /* AF_LOCAL */
-  char			pad[256];	/* Padding to ensure binary compatibility */
-} http_addr_t;
-
-// This is copied from http.h: (Tam)
-typedef struct http_addrlist_s		/**** Socket address list, which is
-					 **** used to enumerate all of the
-					 **** addresses that are associated
-					 **** with a hostname. @since CUPS 1.2/OS X 10.5@
-					 ****/
-{
-  struct http_addrlist_s *next;		/* Pointer to next address in list */
-  http_addr_t		addr;		/* Address */
-} http_addrlist_t;
-
-
-
 /*
  * Prototypes...
  */

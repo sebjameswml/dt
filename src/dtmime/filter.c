@@ -30,8 +30,8 @@
  * Include necessary headers...
  */
 
-#include <cups/string-private.h>
-#include <cups/debug-private.h>
+#include "../dtcups/string-private.h"
+#include "../dtcups/debug-private.h"
 #include "mime.h"
 
 
@@ -76,7 +76,7 @@ mimeAddFilter(mime_t      *mime,	/* I - MIME database */
 		src, src ? src->super : "???", src ? src->type : "???",
 		dst, dst ? dst->super : "???", dst ? dst->type : "???",
 		cost, filter));
-		
+
  /*
   * Range-check the input...
   */

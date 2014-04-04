@@ -24,7 +24,7 @@
  * Include necessary headers...
  */
 
-#include "cups/string-private.h"
+#include "../dtcups/string-private.h"
 
 
 #ifndef HAVE_VSNPRINTF

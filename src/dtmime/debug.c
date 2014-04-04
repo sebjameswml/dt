@@ -25,7 +25,7 @@
  * Include necessary headers...
  */
 
-#include "cups/cups-private.h"
+#include "../dtcups/cups-private.h"
 //#include "cups/thread-private.h"
 #ifdef WIN32
 #  include <sys/timeb.h>

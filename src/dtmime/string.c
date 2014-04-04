@@ -37,8 +37,8 @@
  */
 
 #define _CUPS_STRING_C_
-#include "cups/string-private.h"
-#include "cups/debug-private.h"
+#include "../dtcups/string-private.h"
+#include "../dtcups/debug-private.h"
 //#include "cups/thread-private.h"
 #include "cups/array.h"
 #include <stddef.h>

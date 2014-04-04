@@ -30,7 +30,7 @@
  * Include necessary headers...
  */
 
-#include "cups/cups-private.h"
+#include "../dtcups/cups-private.h"
 
 // Copied from xcode/config.h: (Tam)
 #define CUPS_DATADIR "/usr/share/cups"

@@ -51,9 +51,9 @@
  * Include necessary headers...
  */
 
-#include "cups/string-private.h"
-#include "cups/debug-private.h"
-#include "cups/array-private.h"
+#include "../dtcups/string-private.h"
+#include "../dtcups/debug-private.h"
+#include "../dtcups/array-private.h"
 
 
 /*

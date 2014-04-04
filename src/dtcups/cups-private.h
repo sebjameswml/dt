@@ -30,7 +30,7 @@
 #  define HTTP_MAX_HOST		256	/* Max length of hostname string */
 
 // Include file.h for definition of cups_file_t: (Tam)
-#  include <cups/file.h>
+#  include "file.h"
 
 //#  include "language-private.h"
 //#  include "pwg-private.h"

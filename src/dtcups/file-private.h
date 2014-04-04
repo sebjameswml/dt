@@ -25,7 +25,7 @@
  * Include necessary headers...
  */
 
-#  include "cups/cups-private.h"
+#  include "cups-private.h"
 #  include <stdio.h>
 #  include <stdlib.h>
 #  include <stdarg.h>

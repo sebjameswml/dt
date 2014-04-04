@@ -23,7 +23,7 @@
  * Include necessary headers...
  */
 
-#  include <cups/versioning.h>
+#  include "versioning.h"
 
 
 /*
