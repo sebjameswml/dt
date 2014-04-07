@@ -26,7 +26,7 @@
  */
 
 #include "../dtcups/cups-private.h"
-//#include "cups/thread-private.h"
+#include "../dtcups/thread-private.h"
 #ifdef WIN32
 #  include <sys/timeb.h>
 #  include <time.h>
@@ -68,13 +68,10 @@ int			_cups_debug_level = 1;
 static regex_t		*debug_filter = NULL;
 					/* Filter expression for messages */
 static int		debug_init = 0;	/* Did we initialize debugging? */
-// Disable variables involving mutexes: (Tam)
-#ifdef ENABLE_DEBUG_METHODS_WITH_MUTEX
 static _cups_mutex_t	debug_init_mutex = _CUPS_MUTEX_INITIALIZER,
 					/* Mutex to control initialization */
 			debug_log_mutex = _CUPS_MUTEX_INITIALIZER;
 					/* Mutex to serialize log entries */
-#endif
 
 /*
  * 'debug_thread_id()' - Return an integer representing the current thread.
@@ -408,8 +405,6 @@ debug_vsnprintf(char       *buffer,	/* O - Output buffer */
   return (bytes);
 }
 
-// Disable debug methods involving mutexes: (Tam)
-#ifdef ENABLE_DEBUG_METHODS_WITH_MUTEX
 
 /*
  * '_cups_debug_printf()' - Write a formatted line to the log.
@@ -650,7 +645,6 @@ _cups_debug_set(const char *logfile,	/* I - Log file or NULL */
 
   _cupsMutexUnlock(&debug_init_mutex);
 }
-#endif
 
 #endif /* DEBUG */
 

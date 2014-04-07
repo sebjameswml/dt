@@ -13,6 +13,8 @@
 #include "src/log/MySQLStorage.h"
 
 #include "src/dtmime/mime.h"
+#include "src/dtcups/cups-private.h"
+#include "src/dtppd/ppd.h"
 
 #include "Datastream.h"
 #include "Filter.h"
@@ -201,18 +203,24 @@ void
 Datastream::populateFilters (Data& data)
 {
         char          super[MIME_MAX_SUPER],  /* Super-type name */
-                      type[MIME_MAX_TYPE];    /* Type name */
+                      type[MIME_MAX_TYPE],    /* Type name */
+                      program[1024];          /* Program/filter name */
         int           compression;            /* Compression of file */
-        int           cost;                   /* Cost of filters */
+        int           total_cost,             /* Cost of filters */
+                      prev_cost,              /* Previous cost */
+                      cost;                   /* Cost of PPD filter */
         mime_t        *mime;                  /* MIME database */
         mime_type_t   *src,                   /* Source type */
                       *dst;                   /* Destination type */
         cups_array_t  *mime_filters;          /* Filters for the file */
         mime_filter_t *filter;                /* Current filter */
+        ppd_file_t    *ppd;                   /* PPD file */
+        ppd_attr_t    *attr;                  /* PPD attribute */
 
         mime        = NULL;
         src         = NULL;
         dst         = NULL;
+        prev_cost   = 0;
 
         // TODO make this user configurable:
         string filterDir ("/usr/lib/cups/filter");
@@ -237,32 +245,63 @@ Datastream::populateFilters (Data& data)
                 return;
         }
 
-        // TODO destination file type is an aspect of the
-        // datastream so this should be
-        // this->getDestFileType() or whatever.
-        string dest ("application/vnd.wml-pdf");
+        // Presumably we store the PPD name/path (or use a set path
+        // based on datastream name).
+        string ppdFile ("/etc/dt/ppd/");
+        ppdFile += this->name + ".ppd";
 
-        sscanf(dest.c_str(), "%15[^/]/%31s", super, type);
-        dst = mimeType(mime, super, type);
+        DBG ("About to ppdOpenFile(" << ppdFile << ")");
+        ppd = ppdOpenFile (ppdFile.c_str());
+        if (ppd == (ppd_file_t*)0) {
+                DBG ("Error opening PPD file");
+                mimeDelete(mime);
+                return;
+        }
 
-        mime_filters = mimeFilter(mime, src, dst, &cost);
+        for (attr = ppdFindAttr (ppd, "cupsFilter", NULL);
+             attr;
+             attr = ppdFindNextAttr (ppd, "cupsFilter", NULL)) {
 
-        if (!mime_filters) {
-                DBG ("No filters to convert from " << src->super << "/"
-                     << src->type << " to " << dst->super << "/" << dst->type);
-        } else {
-                filterDir += "/";
-                filter = (mime_filter_t *)cupsArrayFirst(mime_filters);
-                this->filters.push_back (filterDir + filter->filter);
+                DBG ("Got cupsFilter: " << attr->value);
 
-                for (filter = (mime_filter_t *)cupsArrayNext(mime_filters);
-                     filter;
-                     filter = (mime_filter_t *)cupsArrayNext(mime_filters)) {
-                        this->filters.push_back (filterDir + filter->filter);
+                // *cupsFilter: "source/type cost program"
+                if (!attr->value ||
+                    sscanf(attr->value, "%15[^/]/%255s%d%*[ \t]%1023[^\n]", super, type,
+                           &cost, program) != 4) {
+                        throw runtime_error ("Error getting cupsFilter entry from PPD");
                 }
 
-                cupsArrayDelete(mime_filters);
+                dst = mimeType(mime, super, type);
+
+                mime_filters = mimeFilter(mime, src, dst, &total_cost);
+
+                if (!mime_filters) {
+                        DBG ("No filters to convert from " << src->super << "/"
+                             << src->type << " to " << dst->super << "/" << dst->type);
+                } else {
+                        // Include cost of converting to printer's native format:
+                        total_cost += cost;
+
+                        if (prev_cost == 0 || total_cost < prev_cost) {
+
+                                this->filters.clear();
+
+                                filterDir += "/";
+                                filter = (mime_filter_t *)cupsArrayFirst(mime_filters);
+                                this->filters.push_back (filterDir + filter->filter);
+
+                                for (filter = (mime_filter_t *)cupsArrayNext(mime_filters);
+                                     filter;
+                                     filter = (mime_filter_t *)cupsArrayNext(mime_filters)) {
+                                        this->filters.push_back (filterDir + filter->filter);
+                                }
+                                prev_cost = total_cost;
+                        }
+                        cupsArrayDelete(mime_filters);
+                }
         }
+
+        ppdClose (ppd);
 
         if (mime) {
                 mimeDelete(mime);

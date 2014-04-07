@@ -191,6 +191,6 @@ LIBS="$LIBS -lrt"
 
 dnl Always output certain files
 dnl omit for now: doc/Makefile doc/Doxyfile
-AC_CONFIG_FILES([Makefile src/Makefile src/ipp/Makefile src/log/Makefile src/dtmime/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile src/ipp/Makefile src/log/Makefile src/dtmime/Makefile src/dtppd/Makefile])
 
 AC_OUTPUT

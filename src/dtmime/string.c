@@ -39,8 +39,8 @@
 #define _CUPS_STRING_C_
 #include "../dtcups/string-private.h"
 #include "../dtcups/debug-private.h"
-//#include "cups/thread-private.h"
-#include "cups/array.h"
+#include "../dtcups/thread-private.h"
+#include "../dtcups/array.h"
 #include <stddef.h>
 #include <limits.h>
 
@@ -48,11 +48,8 @@
 /*
  * Local globals...
  */
-// Disable variable involving mutexes: (Tam)
-#ifdef ENABLE_STRING_METHODS_WITH_MUTEX
 static _cups_mutex_t	sp_mutex = _CUPS_MUTEX_INITIALIZER;
 					/* Mutex to control access to pool */
-#endif
 static cups_array_t	*stringpool = NULL;
 					/* Global string pool */
 
@@ -63,8 +60,6 @@ static cups_array_t	*stringpool = NULL;
 
 static int	compare_sp_items(_cups_sp_item_t *a, _cups_sp_item_t *b);
 
-// Disable string methods involving mutexes: (Tam)
-#ifdef ENABLE_STRING_METHODS_WITH_MUTEX
 
 /*
  * '_cupsStrAlloc()' - Allocate/reference a string.
@@ -569,7 +564,7 @@ _cupsStrStatistics(size_t *alloc_bytes,	/* O - Allocated bytes */
 
   return (count);
 }
-#endif
+
 
 /*
  * '_cups_strcpy()' - Copy a string allowing for overlapping strings.

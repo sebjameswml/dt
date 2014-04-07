@@ -32,30 +32,6 @@
 // Include file.h for definition of cups_file_t: (Tam)
 #  include "file.h"
 
-//#  include "language-private.h"
-//#  include "pwg-private.h"
-//#  include "ppd-private.h"
-//#  include "thread-private.h"
-//#  include <cups/cups.h>
-#  ifdef __APPLE__
-#    include <sys/cdefs.h>
-#    include <CoreFoundation/CoreFoundation.h>
-#  endif /* __APPLE__ */
-
-
-/*
- * C++ magic...
- */
-
-#  ifdef __cplusplus
-extern "C" {
-#  endif /* __cplusplus */
-
-
-/*
- * Types...
- */
-
 // This is copied from cups.h: (Tam)
 typedef struct cups_option_s		/**** Printer Options ****/
 {
@@ -125,6 +101,32 @@ typedef struct cups_lang_s		/**** Language Cache Structure ****/
 } cups_lang_t;
 #endif
 
+
+//#  include "language-private.h"
+//#  include "pwg-private.h"
+#  include "ppd-private.h"
+#  include "thread-private.h"
+//#  include <cups/cups.h>
+#  ifdef __APPLE__
+#    include <sys/cdefs.h>
+#    include <CoreFoundation/CoreFoundation.h>
+#  endif /* __APPLE__ */
+
+
+/*
+ * C++ magic...
+ */
+
+#  ifdef __cplusplus
+extern "C" {
+#  endif /* __cplusplus */
+
+
+/*
+ * Types...
+ */
+
+
 typedef struct _cups_buffer_s		/**** Read/write buffer ****/
 {
   struct _cups_buffer_s	*next;		/* Next buffer in list */
@@ -176,7 +178,8 @@ typedef struct _cups_globals_s		/**** CUPS global state data ****/
   /* http-addr.c */
   unsigned		ip_addr;	/* Packed IPv4 address */
   char			*ip_ptrs[2];	/* Pointer to packed address */
-  struct hostent	hostent;	/* Host entry for IP address */
+// Disabled: (Tam)
+//  struct hostent	hostent;	/* Host entry for IP address */
 #  ifdef HAVE_GETADDRINFO
   char			hostname[1024];	/* Hostname */
 #  endif /* HAVE_GETADDRINFO */
@@ -199,11 +202,9 @@ typedef struct _cups_globals_s		/**** CUPS global state data ****/
 #  endif /* __APPLE__ */
 
   /* ppd.c */
-// Not using: (Tam)
-//  ppd_status_t		ppd_status;	/* Status of last ppdOpen*() */
+  ppd_status_t		ppd_status;	/* Status of last ppdOpen*() */
   int			ppd_line;	/* Current line number */
-// Not using: (Tam)
-//  ppd_conform_t		ppd_conform;	/* Level of conformance required */
+  ppd_conform_t		ppd_conform;	/* Level of conformance required */
 
   /* pwg-media.c */
   cups_array_t		*leg_size_lut,	/* Lookup table for legacy names */

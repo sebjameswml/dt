@@ -78,16 +78,9 @@ extern "C" {
 #    else
 #      define DLLExport
 #    endif /* WIN32 */
-// Disable debug methods involving mutexes: (Tam)
-#ifdef ENABLE_DEBUG_METHODS_WITH_MUTEX
 #    define DEBUG_puts(x) _cups_debug_puts(x)
 #    define DEBUG_printf(x) _cups_debug_printf x
 #    define DEBUG_set(logfile,level,filter) _cups_debug_set(logfile,level,filter,1)
-#else
-#    define DEBUG_puts(x)
-#    define DEBUG_printf(x)
-#    define DEBUG_set(logfile,level,filter)
-#endif
 #  else
 #    define DLLExport
 #    define DEBUG_puts(x)
@@ -102,15 +95,12 @@ extern "C" {
 
 extern int	_cups_debug_fd;
 extern int	_cups_debug_level;
-// Disable debug methods involving mutexes: (Tam)
-#ifdef ENABLE_DEBUG_METHODS_WITH_MUTEX
 extern void	DLLExport _cups_debug_printf(const char *format, ...)
 		__attribute__ ((__format__ (__printf__, 1, 2)));
 extern void	DLLExport _cups_debug_puts(const char *s);
 extern void	DLLExport _cups_debug_set(const char *logfile,
 					  const char *level, const char *filter,
 					  int force);
-#endif
 #  ifdef WIN32
 extern int	_cups_gettimeofday(struct timeval *tv, void *tz);
 #    define gettimeofday(a,b) _cups_gettimeofday(a, b)

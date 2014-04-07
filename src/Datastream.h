@@ -134,6 +134,8 @@ namespace dt {
                  */
                 void populateFilters (dt::Data& data);
 
+                string getDestType (void);
+
                 /*!
                  * \brief Log an event for the specified data.
                  *

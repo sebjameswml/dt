@@ -49,11 +49,8 @@
 static int		cups_global_index = 0;
 					/* Next thread number */
 #endif /* DEBUG */
-#ifdef ENABLE_CUPS_THREAD
-// Not using: (Tam)
 static _cups_threadkey_t cups_globals_key = _CUPS_THREADKEY_INITIALIZER;
 					/* Thread local storage key */
-#endif
 #ifdef HAVE_PTHREAD_H
 static pthread_once_t	cups_globals_key_once = PTHREAD_ONCE_INIT;
 					/* One-time initialization object */
@@ -117,8 +114,6 @@ _cupsGlobals(void)
   * See if we have allocated the data yet...
   */
 
-#ifdef ENABLE_CUPS_THREAD
-// Not using: (Tam)
   if ((cg = (_cups_globals_t *)_cupsThreadGetData(cups_globals_key)) == NULL)
   {
    /*
@@ -128,7 +123,7 @@ _cupsGlobals(void)
     if ((cg = cups_globals_alloc()) != NULL)
       _cupsThreadSetData(cups_globals_key, cg);
   }
-#endif
+
 
  /*
   * Return the pointer to the data...
