@@ -64,6 +64,22 @@ namespace dt {
                 void process (dt::Data& data);
 
                 /*!
+                 * \brief Get a filter option.
+                 *
+                 * Return the value for a given filter option. Options
+                 * are grouped according to the filter and feature to
+                 * which they apply.
+                 */
+                std::string getOption (const std::string& filter,
+                                       const std::string& feature,
+                                       const std::string& option) const;
+
+                /*!
+                 * \name Filter process callback methods
+                 */
+                //@{
+
+                /*!
                  * \brief Respond to stdout from a filter process.
                  */
                 void filterStdoutReady (void);
@@ -73,6 +89,7 @@ namespace dt {
                  */
                 void filterStderrReady (void);
 
+                //@}
                 /*!
                  * \name Private attribute accessor methods
                  */
@@ -108,6 +125,14 @@ namespace dt {
                  */
                 void setName (const std::string& s) {
                         this->name = s;
+                }
+
+                /*!
+                 * \brief Get the list of filters for this datastream.
+                 * @return The value of this->filters.
+                 */
+                std::list<std::string> getFilters (void) const {
+                        return this->filters;
                 }
 
                 /*!
@@ -159,6 +184,12 @@ namespace dt {
                  * mime.types and mime.convs (as in CUPS).
                  */
                 std::list<std::string> filters;
+
+                /*!
+                 * \brief The backend to be applied by this
+                 * datastream. (qv. dest in wmlpp2 Datastream).
+                 */
+                std::string backend;
 
                 /*! \brief Settings object. */
                 wml::WmlSettings settings;

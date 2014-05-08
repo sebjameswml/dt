@@ -13,6 +13,10 @@
 #endif
 
 #include <string>
+#include <list>
+#include <memory>
+
+#include "FilterFeature.h"
 
 namespace dt {
 
@@ -48,17 +52,22 @@ namespace dt {
                  * \brief Get the path of this filter.
                  * @return The value of this->path.
                  */
-                std::string getPath (void) const {
-                        return this->path;
-                }
+                std::string getPath (void) const;
 
                 /*!
                  * \brief Set the path of this filter.
                  * @param s The new value of this->path.
                  */
-                void setPath (const std::string& s) {
-                        this->path = s;
+                void setPath (const std::string& s);
+
+                /*!
+                 * \brief Get the list of features for this filter.
+                 * @return The value of this->features.
+                 */
+                std::list<std::string> getFeatures (void) const {
+                        return this->features;
                 }
+
 
                 //@}
 
@@ -66,6 +75,9 @@ namespace dt {
 
                 /*! \brief Path */
                 std::string path;
+
+                //std::list<std::shared_ptr<FilterFeature> > features;
+                std::list<std::string> features;
 
         };
 } // dt namespace

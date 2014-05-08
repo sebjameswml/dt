@@ -158,9 +158,9 @@ Datastream::process (Data& data)
                                 + "-" + this->name
                                 + "." + path.substr(path.rfind("/")+1);
 
-                        fstream f (tfp.c_str(), ios::out|ios::trunc);
-                        f << this->filterOutput;
-                        f.close();
+                        fstream fstrm (tfp.c_str(), ios::out|ios::trunc);
+                        fstrm << this->filterOutput;
+                        fstrm.close();
 
                         data.setPath (tfp);
 
@@ -178,7 +178,7 @@ Datastream::process (Data& data)
 
                 if (!this->filterError.empty()) {
                         stringstream ee;
-                        ee << "The filter '" << f.getPath()
+                        ee << "The filter '" << path
                            << "' returned the following on stderr: '" << this->filterError << "'";
                         this->logEvent (data, ee.str());
                         throw runtime_error (ee.str());
@@ -187,7 +187,54 @@ Datastream::process (Data& data)
                 ++i;
         }
 
-        if (!gotOutput) {
+        if (gotOutput) {
+                // Apply backend, if specified
+                if (!this->backend.empty()) {
+
+                        // Apply the backend
+                        string path (this->backend);
+
+                        this->p.reset (true); // keepCallbacks = true
+
+                        this->p.start (path, args);
+                        if (!this->p.waitForStarted()) {
+                                throw runtime_error ("Process didn't start");
+                        }
+
+                        if (!this->filterOutput.empty()) {
+                                // Send output from previous filter to
+                                // process stdin.
+                                this->p.writeIn (this->filterOutput);
+                                this->p.closeWritingEnd();
+                        }
+
+                        // Clear storage for stdout/stderr.
+                        this->filterOutput = "";
+                        this->filterError = "";
+
+                        while (this->p.running()) {
+                                usleep (1000);
+                                this->p.probeProcess();
+                        }
+
+                        // Get any remaining data on stdout/stderr.
+                        this->filterStdoutReady();
+                        this->filterStderrReady();
+
+                        if (this->filterError.empty()) {
+                                stringstream ss;
+                                ss << "Applied backend " << this->backend;
+                                this->logEvent (data, ss.str());
+                        } else {
+                                stringstream ee;
+                                ee << "The backend '" << path
+                                   << "' returned the following on stderr: '" << this->filterError << "'";
+                                this->logEvent (data, ee.str());
+                                throw runtime_error (ee.str());
+                        }
+                }
+
+        } else {
                 // No output from filter chain
                 stringstream ss;
                 ss << "No output from filter '" << *this->lastFilter << "'";
@@ -306,6 +353,21 @@ Datastream::populateFilters (Data& data)
         if (mime) {
                 mimeDelete(mime);
         }
+}
+
+string
+Datastream::getOption (const string& filter,
+                       const string& feature,
+                       const string& option) const
+{
+        if (!this->settings.ready()) {
+                throw runtime_error ("Datastream settings not initialised");
+        }
+        vector<pair<string, string> > groups;
+        groups.push_back (make_pair ("Datastream", this->name));
+        groups.push_back (make_pair (filter, "")); // ID? - filter could be applied more than once?
+        groups.push_back (make_pair (feature, ""));
+        return this->settings.getSetting (groups, option);
 }
 
 void
