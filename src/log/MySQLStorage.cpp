@@ -22,10 +22,6 @@ const string MySQLStorage::defaultDbTable = "log";
 //
 
 MySQLStorage::MySQLStorage()
-        : db (MySQLStorage::defaultDb)
-        , dbServer (MySQLStorage::defaultDbServer)
-        , dbUser (MySQLStorage::defaultDbUser)
-        , dbPass (MySQLStorage::defaultDbPass)
 {
 }
 

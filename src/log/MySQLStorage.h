@@ -113,10 +113,10 @@ namespace dt {
                          * \name Database credentials.
                          */
                         //@{
-                        std::string db;
-                        std::string dbServer;
-                        std::string dbUser;
-                        std::string dbPass;
+                        std::string db = MySQLStorage::defaultDb;
+                        std::string dbServer = MySQLStorage::defaultDbServer;
+                        std::string dbUser = MySQLStorage::defaultDbUser;
+                        std::string dbPass = MySQLStorage::defaultDbTable;
                         //@}
 
                         /*!
