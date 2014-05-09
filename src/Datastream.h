@@ -99,49 +99,37 @@ namespace dt {
                  * \brief Get the id of this datastream.
                  * @return The value of this->id.
                  */
-                std::string getId (void) const {
-                        return this->id;
-                }
+                std::string getId (void) const;
 
                 /*!
                  * \brief Set the id of this datastream.
                  * @param s The new value of this->id.
                  */
-                void setId (const std::string& s) {
-                        this->id = s;
-                }
+                void setId (const std::string& s);
 
                 /*!
                  * \brief Get the name of this datastream.
                  * @return The value of this->name.
                  */
-                std::string getName (void) const {
-                        return this->name;
-                }
+                std::string getName (void) const;
 
                 /*!
                  * \brief Set the name of this datastream.
                  * @param s The new value of this->name.
                  */
-                void setName (const std::string& s) {
-                        this->name = s;
-                }
+                void setName (const std::string& s);
 
                 /*!
                  * \brief Get the list of filters for this datastream.
                  * @return The value of this->filters.
                  */
-                std::list<std::string> getFilters (void) const {
-                        return this->filters;
-                }
+                std::list<std::string> getFilters (void) const;
 
                 /*!
                  * \brief Set the list of filters for this datastream.
                  * @param l The new value of this->filters.
                  */
-                void setFilters (const std::list<std::string>& f) {
-                        this->filters = f;
-                }
+                void setFilters (const std::list<std::string>& f);
 
                 //@}
 

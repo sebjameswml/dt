@@ -47,99 +47,73 @@ namespace dt {
                  * \brief Get the id of this data.
                  * @return The value of this->id.
                  */
-                std::string getId (void) const {
-                        return this->id;
-                }
+                std::string getId (void) const;
 
                 /*!
                  * \brief Get the target datastream for this data.
                  * @return The value of this->targetDatastream.
                  */
-                std::string getTargetDatastream (void) const {
-                        return this->targetDatastream;
-                }
+                std::string getTargetDatastream (void) const;
 
                 /*!
                  * \brief Set the target datastream for this data.
                  * @param s The new value of this->targetDatastream.
                  */
-                void setTargetDatastream (const std::string& s) {
-                        this->targetDatastream = s;
-                }
+                void setTargetDatastream (const std::string& s);
 
                 /*!
                  * \brief Get the name of this data.
                  * @return The value of this->name.
                  */
-                std::string getName (void) const {
-                        return this->name;
-                }
+                std::string getName (void) const;
 
                 /*!
                  * \brief Set the name of this data.
                  * @param s The new value of this->name.
                  */
-                void setName (const std::string& s) {
-                        this->name = s;
-                }
+                void setName (const std::string& s);
 
                 /*!
                  * \brief Get the user of this data.
                  * @return The value of this->user.
                  */
-                std::string getUser (void) const {
-                        return this->user;
-                }
+                std::string getUser (void) const;
 
                 /*!
                  * \brief Set the user of this data.
                  * @param s The new value of this->user.
                  */
-                void setUser (const std::string& s) {
-                        this->user = s;
-                }
+                void setUser (const std::string& s);
 
                 /*!
                  * \brief Get the number of copies of this data.
                  * @return The value of this->copies.
                  */
-                int getCopies (void) const {
-                        return this->copies;
-                }
+                int getCopies (void) const;
 
                 /*!
                  * \brief Get the number of copies of this data.
                  * @return The value of this->copies.
                  */
-                std::string getCopiesStr (void) const {
-                        std::stringstream ss;
-                        ss << this->copies;
-                        return ss.str();
-                }
+                std::string getCopiesStr (void) const;
 
                 /*!
                  * \brief Set the number of copies of this data.
                  * @param i The new value of this->copies.
                  */
-                void setCopies (const int i) {
-                        this->copies = i;
-                }
+                void setCopies (const int i);
 
                 /*!
                  * \brief Get the path of this data.
                  * @return The value of this->path.
                  */
-                std::string getPath (void) const {
-                        return this->path;
-                }
+                std::string getPath (void) const;
 
                 /*!
                  * \brief Set the path of this data.
                  * @param s The new value of this->path.
                  */
-                void setPath (const std::string& s) {
-                        this->path = s;
-                }
+                void setPath (const std::string& s);
 
                 //@}
 

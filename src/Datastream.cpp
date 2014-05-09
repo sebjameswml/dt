@@ -399,3 +399,43 @@ Datastream::logEvent (Data& data, const string& msg)
         e.accept (s);
 #endif
 }
+
+//
+// Accessors
+//
+
+string
+Datastream::getId (void) const
+{
+        return this->id;
+}
+
+void
+Datastream::setId (const string& s)
+{
+        this->id = s;
+}
+
+string
+Datastream::getName (void) const
+{
+        return this->name;
+}
+
+void
+Datastream::setName (const string& s)
+{
+        this->name = s;
+}
+
+list<string>
+Datastream::getFilters (void) const
+{
+        return this->filters;
+}
+
+void
+Datastream::setFilters (const list<string>& f)
+{
+        this->filters = f;
+}
