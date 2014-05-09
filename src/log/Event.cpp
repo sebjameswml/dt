@@ -66,6 +66,124 @@ Event::accept (Storage& s)
         s.store (this);
 }
 
-
+//
 // Accessor methods
 //
+
+string
+Event::getId (void) const
+{
+        return this->id;
+}
+
+void
+Event::setDataId (const string& theDataId)
+{
+        this->dataId = theDataId;
+}
+
+string
+Event::getDataId (void) const
+{
+        return this->dataId;
+}
+
+void
+Event::setMessage (const string& msg)
+{
+        this->message = msg;
+}
+
+string
+Event::getMessage (void) const
+{
+        return this->message;
+}
+
+#ifdef GOT_DT_ERROR_CODE
+void
+Event::setErrorCode (errorCode err)
+{
+        this->errorCode = err;
+}
+
+errorCode
+Event::getErrorCode (void) const
+{
+        return this->errorCode;
+}
+#endif
+
+void
+Event::setDatastreamId (const string& dsId)
+{
+        this->datastreamId = dsId;
+}
+
+string
+Event::getDatastreamId (void) const
+{
+        return this->datastreamId;
+}
+
+void
+Event::setDatastreamName (const string& dsName)
+{
+        this->datastreamName = dsName;
+}
+
+string
+Event::getDatastreamName (void) const
+{
+        return this->datastreamName;
+}
+
+void
+Event::setHostname (const string& hName)
+{
+        this->hostname = hName;
+}
+
+string
+Event::getHostname (void) const
+{
+        return this->hostname;
+}
+
+#ifdef GOT_DT_LOG_LEVEL
+void
+Event::setLevel (logLevel lvl)
+{
+        this->level = lvl;
+}
+
+logLevel
+Event::getLevel (void) const
+{
+        return this->level;
+}
+#endif
+
+void
+Event::setPid (pid_t thePid)
+{
+        this->pid = thePid;
+}
+
+pid_t
+Event::getPid (void) const
+{
+        return this->pid;
+}
+
+void
+Event::setTime (struct timeval theTime)
+{
+        this->time = theTime;
+}
+
+struct timeval
+Event::getTime (void) const
+{
+        return this->time;
+}
