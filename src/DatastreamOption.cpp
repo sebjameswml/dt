@@ -45,7 +45,7 @@ DatastreamOption::populate (const Datastream& ds,
 }
 
 string
-DatastreamOption::show (bool asHtml)
+DatastreamOption::show (bool asHtml) const
 {
         stringstream ss;
         ss << this->getLabel() << ": " << this->getValue();
@@ -317,22 +317,18 @@ CompositeOption::populate (const Datastream& ds,
                            const string& filter,
                            const string& feature)
 {
-        auto i (this->options.begin()), end (this->options.end());
-        while (i != end) {
-                (*i)->populate (ds, filter, feature);
-                ++i;
+        for (auto& i : this->options) {
+                i->populate (ds, filter, feature);
         }
 }
 
 string
-CompositeOption::show (bool asHtml)
+CompositeOption::show (bool asHtml) const
 {
         stringstream ss;
         ss << this->getLabel() << " (group):";
-        auto i (this->options.begin()), end (this->options.end());
-        while (i != end) {
-                ss << "\n- " << (*i)->show (asHtml);
-                ++i;
+        for (auto i : this->options) {
+                ss << "\n- " << i->show (asHtml);
         }
         return ss.str();
 }

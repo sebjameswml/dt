@@ -82,7 +82,7 @@ namespace dt {
                 /*!
                  * \brief Show this DatastreamOption.
                  */
-                virtual std::string show (bool asHtml = false);
+                virtual std::string show (bool asHtml = false) const;
 
                 /*!
                  * \name Private attribute accessor methods
@@ -425,7 +425,7 @@ namespace dt {
                 /*!
                  * \brief Show this CompositeOption.
                  */
-                std::string show (bool asHtml = false);
+                std::string show (bool asHtml = false) const;
 
                 /*!
                  * \name Composite operations

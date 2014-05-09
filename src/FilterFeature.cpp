@@ -38,10 +38,8 @@ FilterFeature::isConfigurable (void)
 void
 FilterFeature::populateOptions (const Datastream& ds, const string& filter)
 {
-        auto i (this->options.begin()), end (this->options.end());
-        while (i != end) {
-                (*i)->populate (ds, filter, this->getName());
-                ++i;
+        for (auto& i : this->options) {
+                i->populate (ds, filter, this->getName());
         }
 }
 

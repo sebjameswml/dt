@@ -98,13 +98,14 @@ Datastream::process (Data& data)
                 throw runtime_error ("Couldn't open input data file");
         }
 
-        list<string> args;
-        args.push_back (this->name);
-        args.push_back (data.getId());
-        args.push_back (data.getUser());
-        args.push_back (data.getName());
-        args.push_back (data.getCopiesStr());
-        args.push_back ("0"); // data.getOptions());
+        list<string> args = {
+                this->name
+                , data.getId()
+                , data.getUser()
+                , data.getName()
+                , data.getCopiesStr()
+                , "0" // data.getOptions()
+        };
 
         // Apply each filter in turn until either we come to the end
         // of the chain or one of the filters does not create any
@@ -363,10 +364,11 @@ Datastream::getOption (const string& filter,
         if (!this->settings.ready()) {
                 throw runtime_error ("Datastream settings not initialised");
         }
-        vector<pair<string, string> > groups;
-        groups.push_back (make_pair ("Datastream", this->name));
-        groups.push_back (make_pair (filter, "")); // ID? - filter could be applied more than once?
-        groups.push_back (make_pair (feature, ""));
+        vector<pair<string, string> > groups = {
+                { "Datastream", this->name }
+                , { filter, "" } // ID? - filter could be applied more than once?
+                , { feature, "" }
+        };
         return this->settings.getSetting (groups, option);
 }
 
