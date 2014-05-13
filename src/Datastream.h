@@ -75,6 +75,18 @@ namespace dt {
                                        const std::string& option) const;
 
                 /*!
+                 * \brief Set a filter option.
+                 *
+                 * Set the value for a given filter option. Options
+                 * are grouped according to the filter and feature to
+                 * which they apply.
+                 */
+                void setOption (const std::string& filter,
+                                const std::string& feature,
+                                const std::string& option,
+                                const std::string& value);
+
+                /*!
                  * \name Filter process callback methods
                  */
                 //@{

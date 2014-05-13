@@ -365,11 +365,30 @@ Datastream::getOption (const string& filter,
                 throw runtime_error ("Datastream settings not initialised");
         }
         vector<pair<string, string> > groups = {
-                { "Datastream", this->name }
+                { "Datastream", "" }
                 , { filter, "" } // ID? - filter could be applied more than once?
                 , { feature, "" }
         };
         return this->settings.getSetting (groups, option);
+}
+
+void
+Datastream::setOption (const string& filter,
+                       const string& feature,
+                       const string& option,
+                       const string& value)
+{
+        if (!this->settings.ready()) {
+                throw runtime_error ("Datastream settings not initialised");
+        }
+        vector<pair<string, string> > groups = {
+                { "Datastream", "" }
+                , { filter, "" } // ID? - filter could be applied more than once?
+                , { feature, "" }
+        };
+        this->settings.setSetting (groups, option, value);
+        this->settings.write();
+
 }
 
 void

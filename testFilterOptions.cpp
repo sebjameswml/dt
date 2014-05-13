@@ -70,6 +70,7 @@ int main() {
 
         ds.setFilters (filters);
 
+        ds.setOption ("/usr/lib/cups/filter/wmlpdf", "archive", "archiveShare_sharePath", "/etc/wml/archive/kyo1300");
 
         filters = ds.getFilters();
 
