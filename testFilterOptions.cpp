@@ -83,7 +83,7 @@ int main() {
         auto iFilt (filters.cbegin()), filtEnd (filters.cend());
         while (iFilt != filtEnd) {
 
-                Filter f (*iFilt); // Create filter from filter
+                BaseFilter f (*iFilt); // Create filter from filter
                                    // path. (Maybe via factory that
                                    // can assign features as
                                    // appropriate?)
@@ -105,10 +105,8 @@ int main() {
                 if (!features.empty()) {
                         cout << "Filter " << f.getPath() << " has the following features:" << endl;
                 }
-                auto iFeat (features.cbegin()), featEnd (features.cend());
-                while (iFeat != featEnd) {
-                        displayFeature (ds, *iFilt, *iFeat);
-                        ++iFeat;
+                for (auto i : features) {
+                        displayFeature (ds, *iFilt, i);
                 }
 #endif
                 ++iFilt;

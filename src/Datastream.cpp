@@ -98,30 +98,27 @@ Datastream::process (Data& data)
                 throw runtime_error ("Couldn't open input data file");
         }
 
-        list<string> args = {
-                this->name
-                , data.getId()
-                , data.getUser()
-                , data.getName()
-                , data.getCopiesStr()
-                , "0" // data.getOptions()
-        };
-
         // Apply each filter in turn until either we come to the end
         // of the chain or one of the filters does not create any
         // further output.
 
         bool gotOutput (true);
+        list<string> args;
         auto i (this->filters.begin()), end (this->filters.end());
         this->lastFilter = end;
         while (i != end && gotOutput) {
 
                 this->lastFilter = i;
 
-                Filter f (*i);
+                // TODO Use a factory to get a BaseFilter* pf which
+                // can be used to get the appropriate argument list
+                // for the filter.
+                BaseFilter f (*i);
 
                 // Apply the filter
                 string path (f.getPath());
+
+                f.populateArgs (*this, data, args);
 
                 this->p.reset (true); // keepCallbacks = true
 
@@ -388,7 +385,6 @@ Datastream::setOption (const string& filter,
         };
         this->settings.setSetting (groups, option, value);
         this->settings.write();
-
 }
 
 void
