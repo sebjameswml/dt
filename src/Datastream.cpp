@@ -18,7 +18,8 @@
 
 #include "Datastream.h"
 #include "Filter.h"
-#include "FilterProcessCallbacks.h"
+#include "FilterFactory.h"
+#include "ExtProcessCallbacks.h"
 
 using namespace std;
 using namespace dt;
@@ -80,7 +81,9 @@ Datastream::process (Data& data)
         }
 
         // Callbacks for the filter process
-        FilterProcessCallbacks cb (this);
+        ExtProcessCallbacks cb;
+        cb.addReadStdoutSignalCallback (bind(&Datastream::filterStdoutReady, this));
+        cb.addReadStderrSignalCallback (bind(&Datastream::filterStderrReady, this));
         this->p.setCallbacks (&cb);
 
         // Clear storage for stdout/stderr.
@@ -110,18 +113,20 @@ Datastream::process (Data& data)
 
                 this->lastFilter = i;
 
-                // TODO Use a factory to get a BaseFilter* pf which
-                // can be used to get the appropriate argument list
-                // for the filter.
-                BaseFilter f (*i);
+                // Use a factory to get a pointer to a BaseFilter,
+                // which can be used to get the appropriate argument
+                // list for the filter.
+                unique_ptr<BaseFilter> pf (FilterFactory::create (*i));
+                if (pf.get() == nullptr) {
+                        throw runtime_error ("Error creating filter object");
+                }
+
+                string path (pf->getPath());
+
+                pf->populateArgs (*this, data, args);
 
                 // Apply the filter
-                string path (f.getPath());
-
-                f.populateArgs (*this, data, args);
-
                 this->p.reset (true); // keepCallbacks = true
-
                 this->p.start (path, args);
                 if (!this->p.waitForStarted()) {
                         throw runtime_error ("Process didn't start");
