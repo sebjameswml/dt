@@ -19,7 +19,6 @@
 #include "Datastream.h"
 #include "Filter.h"
 #include "FilterFactory.h"
-#include "ExtProcessCallbacks.h"
 
 using namespace std;
 using namespace dt;
@@ -80,11 +79,8 @@ Datastream::process (Data& data)
                 this->populateFilters (data);
         }
 
-        // Callbacks for the filter process
-        ExtProcessCallbacks cb;
-        cb.addReadStdoutSignalCallback (bind(&Datastream::filterStdoutReady, this));
-        cb.addReadStderrSignalCallback (bind(&Datastream::filterStderrReady, this));
-        this->p.setCallbacks (&cb);
+        // Set up callbacks for the filter process
+        this->setupFilterProcessCallbacks();
 
         // Clear storage for stdout/stderr.
         this->filterOutput = "";
@@ -356,6 +352,17 @@ Datastream::populateFilters (Data& data)
         if (mime) {
                 mimeDelete(mime);
         }
+}
+
+void
+Datastream::setupFilterProcessCallbacks (void)
+{
+        this->cb.clear();
+        // Using lambda expression (passing local variables by
+        // reference) instead of the alternative form with std::bind.
+        this->cb.addReadStdoutSignalCallback ([&]{ this->filterStdoutReady(); });
+        this->cb.addReadStderrSignalCallback ([&]{ this->filterStderrReady(); });
+        this->p.setCallbacks (&this->cb);
 }
 
 string

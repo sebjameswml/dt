@@ -18,6 +18,7 @@
 #include <wmlppcommon/WmlSettings.h>
 
 #include "Data.h"
+#include "ExtProcessCallbacks.h"
 
 namespace dt {
 
@@ -159,6 +160,11 @@ namespace dt {
                  */
                 void populateFilters (dt::Data& data);
 
+                /*!
+                 * \brief Set up callbacks for filter process.
+                 */
+                void setupFilterProcessCallbacks (void);
+
                 string getDestType (void);
 
                 /*!
@@ -198,6 +204,11 @@ namespace dt {
                  * \brief Object for processing data through filters.
                  */
                 wml::Process p;
+
+                /*!
+                 * \brief Process callbacks object.
+                 */
+                ExtProcessCallbacks cb;
 
                 /*!
                  * \brief Storage for filter output.

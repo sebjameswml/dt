@@ -118,3 +118,14 @@ ExtProcessCallbacks::addReadStderrSignalCallback (std::function<void()> cb)
 {
         this->readStderrSignalCallback = cb;
 }
+
+void
+ExtProcessCallbacks::clear (void)
+{
+        this->startedSignalCallback = nullptr;
+        this->errorSignalCallback = nullptr;
+        this->returnCodeSignalCallback = nullptr;
+        this->processFinishedSignalCallback = nullptr;
+        this->readStdoutSignalCallback = nullptr;
+        this->readStderrSignalCallback = nullptr;
+}

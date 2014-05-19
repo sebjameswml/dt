@@ -73,6 +73,11 @@ namespace dt {
                 void addReadStderrSignalCallback (std::function<void()>);
                 //@}
 
+                /*!
+                 * \brief Clear all current callbacks.
+                 */
+                void clear (void);
+
         private:
                 std::function<void(string)> startedSignalCallback;
                 std::function<void(int)> errorSignalCallback;
