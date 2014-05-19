@@ -5,21 +5,21 @@
 #include "config.h"
 #include <futil/WmlDbg.h>
 
-#include "ExtProcessCallbacks.h"
+#include "ProcessCallbacks.h"
 
 using namespace std;
 using namespace dt;
 
-ExtProcessCallbacks::ExtProcessCallbacks()
+ProcessCallbacks::ProcessCallbacks()
 {
 }
 
-ExtProcessCallbacks::~ExtProcessCallbacks()
+ProcessCallbacks::~ProcessCallbacks()
 {
 }
 
 void
-ExtProcessCallbacks::startedSignal (string s)
+ProcessCallbacks::startedSignal (string s)
 {
         try {
                 this->startedSignalCallback (s);
@@ -30,7 +30,7 @@ ExtProcessCallbacks::startedSignal (string s)
 }
 
 void
-ExtProcessCallbacks::errorSignal (int i)
+ProcessCallbacks::errorSignal (int i)
 {
         try {
                 this->errorSignalCallback (i);
@@ -41,7 +41,7 @@ ExtProcessCallbacks::errorSignal (int i)
 }
 
 void
-ExtProcessCallbacks::processFinishedSignal (string s)
+ProcessCallbacks::processFinishedSignal (string s)
 {
         try {
                 this->processFinishedSignalCallback (s);
@@ -52,7 +52,7 @@ ExtProcessCallbacks::processFinishedSignal (string s)
 }
 
 void
-ExtProcessCallbacks::returnCodeSignal (int i)
+ProcessCallbacks::returnCodeSignal (int i)
 {
         try {
                 this->returnCodeSignalCallback (i);
@@ -63,7 +63,7 @@ ExtProcessCallbacks::returnCodeSignal (int i)
 }
 
 void
-ExtProcessCallbacks::readyReadStandardOutputSignal (void)
+ProcessCallbacks::readyReadStandardOutputSignal (void)
 {
         try {
                 this->readStdoutSignalCallback();
@@ -73,7 +73,7 @@ ExtProcessCallbacks::readyReadStandardOutputSignal (void)
         }
 }
 void
-ExtProcessCallbacks::readyReadStandardErrorSignal (void)
+ProcessCallbacks::readyReadStandardErrorSignal (void)
 {
         try {
                 this->readStderrSignalCallback();
@@ -84,43 +84,43 @@ ExtProcessCallbacks::readyReadStandardErrorSignal (void)
 }
 
 void
-ExtProcessCallbacks::addStartedSignalCallback (function<void(string)> cb)
+ProcessCallbacks::addStartedSignalCallback (function<void(string)> cb)
 {
         this->startedSignalCallback = cb;
 }
 
 void
-ExtProcessCallbacks::addErrorSignalCallback (function<void(int)> cb)
+ProcessCallbacks::addErrorSignalCallback (function<void(int)> cb)
 {
         this->errorSignalCallback = cb;
 }
 
 void
-ExtProcessCallbacks::addProcessFinishedSignalCallback (function<void(string)> cb)
+ProcessCallbacks::addProcessFinishedSignalCallback (function<void(string)> cb)
 {
         this->processFinishedSignalCallback = cb;
 }
 
 void
-ExtProcessCallbacks::addReturnCodeSignalCallback (function<void(int)> cb)
+ProcessCallbacks::addReturnCodeSignalCallback (function<void(int)> cb)
 {
         this->returnCodeSignalCallback = cb;
 }
 
 void
-ExtProcessCallbacks::addReadStdoutSignalCallback (std::function<void()> cb)
+ProcessCallbacks::addReadStdoutSignalCallback (std::function<void()> cb)
 {
         this->readStdoutSignalCallback = cb;
 }
 
 void
-ExtProcessCallbacks::addReadStderrSignalCallback (std::function<void()> cb)
+ProcessCallbacks::addReadStderrSignalCallback (std::function<void()> cb)
 {
         this->readStderrSignalCallback = cb;
 }
 
 void
-ExtProcessCallbacks::clear (void)
+ProcessCallbacks::clear (void)
 {
         this->startedSignalCallback = nullptr;
         this->errorSignalCallback = nullptr;

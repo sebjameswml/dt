@@ -15,7 +15,7 @@
 #include <string>
 #include <memory>
 
-#include "ExtProcessCallbacks.h"
+#include "ProcessCallbacks.h"
 
 namespace dt {
 
@@ -65,7 +65,7 @@ namespace dt {
          * \brief Class for specifying callbacks for querying filters
          * in the FilterFactory::create() method.
          */
-        class FilterFactoryCallbacks : public ExtProcessCallbacks
+        class FilterFactoryCallbacks : public ProcessCallbacks
         {
         public:
                 FilterFactoryCallbacks();

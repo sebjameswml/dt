@@ -18,7 +18,7 @@
 #include <wmlppcommon/WmlSettings.h>
 
 #include "Data.h"
-#include "ExtProcessCallbacks.h"
+#include "ProcessCallbacks.h"
 
 namespace dt {
 
@@ -208,7 +208,7 @@ namespace dt {
                 /*!
                  * \brief Process callbacks object.
                  */
-                ExtProcessCallbacks cb;
+                ProcessCallbacks cb;
 
                 /*!
                  * \brief Storage for filter output.

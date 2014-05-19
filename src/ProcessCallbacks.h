@@ -1,11 +1,11 @@
 /* -*-c++-*- */
 /*!
- * \file ExtProcessCallbacks.h
+ * \file ProcessCallbacks.h
  *
- * \brief Declares the class \c ExtProcessCallbacks.
+ * \brief Declares the class \c ProcessCallbacks.
  */
-#ifndef _EXTPROCESSCALLBACKS_H_
-#define _EXTPROCESSCALLBACKS_H_
+#ifndef _DT_PROCESSCALLBACKS_H_
+#define _DT_PROCESSCALLBACKS_H_
 
 #ifdef __GNUG__
 # pragma interface
@@ -17,12 +17,12 @@
 namespace dt {
 
         /*!
-         * \headerfile ExtProcessCallbacks.h "ExtProcessCallbacks.h"
+         * \headerfile ProcessCallbacks.h "ProcessCallbacks.h"
          *
          * \brief An extended callbacks class that simplifies the
          * process of defining callbacks for a particular use case.
          *
-         * \c ExtProcessCallbacks allows the client to specify
+         * \c ProcessCallbacks allows the client to specify
          * callable objects for use in handling particular
          * signals. These objects, if specified, are invoked with the
          * appropriate parameters when the callback is called.
@@ -33,16 +33,16 @@ namespace dt {
          * lambda expression, or some other callable object, to any
          * callback for which functionality is desired.
          */
-        class ExtProcessCallbacks : public wml::ProcessCallbacks
+        class ProcessCallbacks : public wml::ProcessCallbacks
         {
         public:
-                ExtProcessCallbacks();
+                ProcessCallbacks();
 
                 /*!
                  * \note Destructor declared virtual to ensure proper
                  * cleanup of derived class objects.
                  */
-                virtual ~ExtProcessCallbacks();
+                virtual ~ProcessCallbacks();
 
                 /*!
                  * \name Callback invocations
@@ -90,4 +90,4 @@ namespace dt {
 
 } // namespace dt
 
-#endif // _EXTPROCESSCALLBACKS_H_
+#endif // _DT_PROCESSCALLBACKS_H_

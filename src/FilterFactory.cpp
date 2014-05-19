@@ -77,7 +77,7 @@ FilterFactory::storeReturnCode (int i)
  */
 
 FilterFactoryCallbacks::FilterFactoryCallbacks (void)
-        : ExtProcessCallbacks()
+        : ProcessCallbacks()
 {
         using namespace std::placeholders; // for `_1`
         this->addReturnCodeSignalCallback (bind(&FilterFactory::storeReturnCode, _1));
