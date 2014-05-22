@@ -191,6 +191,9 @@ LIBS="$LIBS -lrt"
 
 dnl Always output certain files
 dnl omit for now: doc/Makefile doc/Doxyfile
-AC_CONFIG_FILES([Makefile src/Makefile src/ipp/Makefile src/log/Makefile src/dtmime/Makefile src/dtppd/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile src/ipp/Makefile src/log/Makefile src/dtmime/Makefile src/dtppd/Makefile src/filter/Makefile])
+
+dnl These programs are DT filters, we place them in a default location.
+AC_SUBST([filtdir],         ['/usr/lib/dt/filter'])
 
 AC_OUTPUT

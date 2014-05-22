@@ -56,8 +56,10 @@ FilterFactory::create (const std::string& path)
                 // We expect a CUPS filter program to return a
                 // non-zero value because unexpected arguments were
                 // passed.
+                DBG ("Non-zero return code: creating a standard CUPS filter object");
                 pf.reset (new BaseFilter (path));
         } else {
+                DBG ("Filter call succeeded: creating a DT filter object");
                 DBG ("Output: " << p.readAllStandardOutput());
                 pf.reset (new Filter (path));
                 // Also set up filter features...

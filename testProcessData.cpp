@@ -13,7 +13,7 @@ using namespace dt;
 int main (int argc, char** argv) {
 
         if (argc < 2) {
-                cerr << "Usage: testProcessData file [filter1 filter2]\n";
+                cerr << "Usage: testProcessData file [path/to/filter1 path/to/filter2]\n";
                 cerr << "  The file should contain the input data to be passed to the filter chain\n";
                 cerr << "  Optionally, filters through which to pass the file may be specified\n";
                 return -1;
@@ -28,10 +28,9 @@ int main (int argc, char** argv) {
 
         list<string> filters;
         if (argc > 2) {
-                string filterDir ("/usr/lib/cups/filter/");
                 int i(2);
                 while (i < argc) {
-                        filters.push_back (filterDir + argv[i]);
+                        filters.push_back (argv[i]);
                         ++i;
                 }
         }

@@ -140,9 +140,21 @@ namespace dt {
 
                 /*!
                  * \brief Set the list of filters for this datastream.
-                 * @param l The new value of this->filters.
+                 * @param f The new value of this->filters.
                  */
                 void setFilters (const std::list<std::string>& f);
+
+                /*!
+                 * \brief Get the filter path for this datastream.
+                 * @return The value of this->filterPath.
+                 */
+                std::string getFilterPath (void) const;
+
+                /*!
+                 * \brief Set the filter path for this datastream.
+                 * @param f The new value of this->filterPath.
+                 */
+                void setFilterPath (const std::string& s);
 
                 //@}
 
@@ -192,6 +204,16 @@ namespace dt {
                 std::list<std::string> filters;
 
                 /*!
+                 * \brief The search path for finding filters for this
+                 * datastream.
+                 *
+                 * Colon/semicolon-separated list of paths.
+                 *
+                 * \note Should this be set per Datastream or system wide?
+                 */
+                std::string filterPath;
+
+                /*!
                  * \brief The backend to be applied by this
                  * datastream. (qv. dest in wmlpp2 Datastream).
                  */
@@ -226,6 +248,10 @@ namespace dt {
                  */
                 std::list<std::string>::const_iterator lastFilter;
 
+                /*!
+                 * \brief The default search path for finding filters.
+                 */
+                static const std::string defaultFilterPath;
         };
 } // dt namespace
 

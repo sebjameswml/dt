@@ -23,17 +23,21 @@
 using namespace std;
 using namespace dt;
 using namespace dt::log;
-using namespace wml;
+
+const string
+Datastream::defaultFilterPath = "/usr/lib/dt/filter:/usr/lib/cups/filter";
 
 Datastream::Datastream()
         : id ("")
         , name ("")
+        , filterPath (Datastream::defaultFilterPath)
 {
 }
 
 Datastream::Datastream (const string& theId)
         : id (theId)
         , name ("")
+        , filterPath (Datastream::defaultFilterPath)
 {
         this->initialise();
 }
@@ -54,6 +58,7 @@ Datastream::initialise (void)
                 // Set up datastream from settings
                 this->name = this->settings.getSetting ("Datastream", "name");
                 this->filters = this->settings.getListStringsSetting ("Datastream", "filters");
+                this->filterPath = this->settings.getSetting ("Datastream", "filterPath");
         }
 }
 
@@ -63,6 +68,7 @@ Datastream::write (void)
         this->settings.setSetting ("Datastream", "id", this->id);
         this->settings.setSetting ("Datastream", "name", this->name);
         this->settings.setSetting ("Datastream", "filters", this->filters);
+        this->settings.setSetting ("Datastream", "filterPath", this->filterPath);
         this->settings.write();
 }
 
@@ -250,7 +256,9 @@ Datastream::populateFilters (Data& data)
 {
         char          super[MIME_MAX_SUPER],  /* Super-type name */
                       type[MIME_MAX_TYPE],    /* Type name */
-                      program[1024];          /* Program/filter name */
+                      program[1024],          /* Program/filter name */
+                      path[1024];             /* Full path to filter program */
+
         int           compression;            /* Compression of file */
         int           total_cost,             /* Cost of filters */
                       prev_cost,              /* Previous cost */
@@ -268,11 +276,8 @@ Datastream::populateFilters (Data& data)
         dst         = NULL;
         prev_cost   = 0;
 
-        // TODO make this user configurable:
-        string filterDir ("/usr/lib/cups/filter");
-
         if (!mime) {
-                mime = mimeLoad("/etc/dt/mime", filterDir.c_str());
+                mime = mimeLoad("/etc/dt/mime", this->filterPath.c_str());
         }
 
         string file (data.getPath().c_str());
@@ -332,14 +337,13 @@ Datastream::populateFilters (Data& data)
 
                                 this->filters.clear();
 
-                                filterDir += "/";
                                 filter = (mime_filter_t *)cupsArrayFirst(mime_filters);
-                                this->filters.push_back (filterDir + filter->filter);
-
-                                for (filter = (mime_filter_t *)cupsArrayNext(mime_filters);
-                                     filter;
-                                     filter = (mime_filter_t *)cupsArrayNext(mime_filters)) {
-                                        this->filters.push_back (filterDir + filter->filter);
+                                while (filter) {
+                                        if (cupsFileFind(filter->filter, this->filterPath.c_str(),
+                                                         1, path, sizeof(path))) {
+                                                this->filters.push_back (path);
+                                        }
+                                        filter = (mime_filter_t *)cupsArrayNext(mime_filters);
                                 }
                                 prev_cost = total_cost;
                         }
@@ -467,4 +471,16 @@ void
 Datastream::setFilters (const list<string>& f)
 {
         this->filters = f;
+}
+
+string
+Datastream::getFilterPath (void) const
+{
+        return this->filterPath;
+}
+
+void
+Datastream::setFilterPath (const string& s)
+{
+        this->filterPath = s;
 }
