@@ -19,18 +19,18 @@ int FilterFactory::returnCode = -1;
 unique_ptr<BaseFilter>
 FilterFactory::create (const std::string& path)
 {
-        // To determine if this is a standard CUPS filter, in which
-        // case we want to create a BaseFilter object, or an extended
-        // DT filter, call the filter program with a DT filter
-        // specific argument, perhaps the one that returns supported
-        // features. If no error occurs then it is a DT filter (with
-        // the specified feature set), otherwise it's a standard CUPS
+        // To determine if this is a standard CUPS filter or an
+        // extended DT filter, call the filter with a DT filter
+        // specific argument that returns a list of supported
+        // features. If this works then it is a DT filter (with the
+        // specified feature set), otherwise it's a standard CUPS
         // filter.
 
         unique_ptr<BaseFilter> pf;
 
         wml::Process p;
         list<string> args;
+        args.push_back ("dummy"); // NB: The first item in the args list is discarded
         args.push_back ("--list-features");
 
         // Initialize return code, in anticipation of storing the
@@ -54,16 +54,17 @@ FilterFactory::create (const std::string& path)
                 throw runtime_error (err);
         } else if (FilterFactory::returnCode > 0) {
                 // We expect a CUPS filter program to return a
-                // non-zero value because unexpected arguments were
-                // passed.
+                // non-zero value when called with an unexpected
+                // number of arguments.
                 DBG ("Non-zero return code: creating a standard CUPS filter object");
                 pf.reset (new BaseFilter (path));
         } else {
                 DBG ("Filter call succeeded: creating a DT filter object");
-                DBG ("Output: " << p.readAllStandardOutput());
                 pf.reset (new Filter (path));
-                // Also set up filter features...
-                // pf->setFeatures (p.readAllStandardOutput());
+                // Set up filter features.
+                string features (p.readAllStandardOutput());
+                DBG ("Setting features: " << features);
+                pf->setFeatures (features);
         }
         return pf;
 }

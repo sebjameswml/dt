@@ -8,6 +8,7 @@ std::ofstream DBGSTREAM;
 #include "src/Datastream.h"
 #include "src/DatastreamOption.h"
 #include "src/Filter.h"
+#include "src/FilterFactory.h"
 #include "src/FilterFeature.h"
 #include "src/ArchiveFeature.h"
 
@@ -15,11 +16,11 @@ using namespace std;
 using namespace dt;
 
 // FilterFeature factory method
-shared_ptr<FilterFeature>
+unique_ptr<FilterFeature>
 createFeature (const string& feature)
 {
-        shared_ptr<FilterFeature> pFeat;
-        if (feature == "archive") {
+        unique_ptr<FilterFeature> pFeat;
+        if (feature.find ("archive") != string::npos) {
                 pFeat.reset (new ArchiveFeature());
         }
         return pFeat;
@@ -28,9 +29,9 @@ createFeature (const string& feature)
 void
 displayFeature (const Datastream& ds, const string& filter, const string& feature)
 {
-        shared_ptr<FilterFeature> pFeat (createFeature (feature));
-        if (!pFeat->isConfigurable()) {
-                cout << "Feature '" << pFeat->getName() << "' is not configurable" << endl;
+        unique_ptr<FilterFeature> pFeat (createFeature (feature));
+        if (!pFeat.get()) {
+                cout << "* Unknown feature: " << feature << endl;
                 return;
         }
 
@@ -42,8 +43,12 @@ displayFeature (const Datastream& ds, const string& filter, const string& featur
         // Feature description
         // Feature controls
 
-        cout << "  * " << pFeat->getLabel() << endl;
-        cout << "    " << pFeat->getDesc() << endl;
+        cout << "* " << pFeat->getLabel() << endl;
+        cout << "  " << pFeat->getDesc() << endl;
+
+        if (!pFeat->isConfigurable()) {
+                cout << "\tThis feature is not configurable" << endl;
+        }
 
         FilterFeature::ConstOptionIter iOpt (pFeat->beginOptions()),
                 optEnd (pFeat->endOptions());
@@ -51,9 +56,10 @@ displayFeature (const Datastream& ds, const string& filter, const string& featur
                 cout << "\t" << (*iOpt)->show() << endl;
                 ++iOpt;
         }
+        cout << endl;
 }
 
-int main() {
+int main (int argc, char** argv) {
 
         DBGOPEN ("./testFilterOptions.dbg");
 
@@ -62,15 +68,15 @@ int main() {
         cout << "Datastream ID: " << ds.getId() << endl;
         cout << "Datastream name: " << ds.getName() << endl;
 
-
         list<string> filters;
-        filters.push_back ("/usr/lib/cups/filter/wmlkeyval");
-//       filters.push_back ("/usr/lib/cups/filter/wmlpassthru");
-        filters.push_back ("/usr/lib/cups/filter/wmlpdf");
-
-        ds.setFilters (filters);
-
-        ds.setOption ("/usr/lib/cups/filter/wmlpdf", "archive", "archiveShare_sharePath", "/etc/wml/archive/kyo1300");
+        if (argc > 1) {
+                int i(1);
+                while (i < argc) {
+                        filters.push_back (argv[i]);
+                        ++i;
+                }
+                ds.setFilters (filters);
+        }
 
         filters = ds.getFilters();
 
@@ -83,17 +89,18 @@ int main() {
         auto iFilt (filters.cbegin()), filtEnd (filters.cend());
         while (iFilt != filtEnd) {
 
-                BaseFilter f (*iFilt); // Create filter from filter
-                                   // path. (Maybe via factory that
-                                   // can assign features as
-                                   // appropriate?)
+                // Create filter from filter path.
+                unique_ptr<BaseFilter> pf (FilterFactory::create (*iFilt));
+                if (pf.get() == nullptr) {
+                        throw runtime_error ("Error creating filter object");
+                }
 
                 // Output filter info: name and description?
 
 #ifdef USING_LIST_FILTERFEATURE_OBJ
                 // If Filter holds list of objects of type FilterFeature
-                Filter::ConstFeatureIter iFeat (f.beginFeatures()),
-                        featEnd (f.endFeatures());
+                Filter::ConstFeatureIter iFeat (pf->beginFeatures()),
+                        featEnd (pf->endFeatures());
                 while (iFeat != featEnd) {
                         if (iFeat->isConfigurable()) {
                                 displayFeature (ds, filter, iFeat->getName());
@@ -101,9 +108,10 @@ int main() {
                         ++iFeat;
                 }
 #else
-                list<string> features (f.getFeatures());
+                list<string> features (pf->getFeatures());
                 if (!features.empty()) {
-                        cout << "Filter " << f.getPath() << " has the following features:" << endl;
+                        cout << "Filter " << pf->getPath()
+                             << " has the following features:" << endl << endl;
                 }
                 for (auto i : features) {
                         displayFeature (ds, *iFilt, i);

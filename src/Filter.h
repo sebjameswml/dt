@@ -93,6 +93,16 @@ namespace dt {
                  */
                 std::list<std::string> getFeatures (void) const;
 
+                /*!
+                 * \brief Set the features for this filter.
+                 * \param feat List of features with which to populate
+                 * this->features.
+                 * \param delim \optional Delimiter character. If not
+                 * specified, a delimiter is selected automatically
+                 * from amongst the following characters: " ,;:|@#+%$"
+                 */
+                void setFeatures (const std::string& feat, char delim = '\0');
+
                 //@}
 
         private:

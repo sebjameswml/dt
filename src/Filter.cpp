@@ -68,6 +68,24 @@ BaseFilter::getFeatures (void) const
         return this->features;
 }
 
+void
+BaseFilter::setFeatures (const string& feat, char delim)
+{
+        this->features.clear();
+        if (!delim) {
+                string::size_type pos (feat.find_first_of (" ,;:|@#+%$"));
+                if (pos != string::npos) {
+                        delim = feat[pos];
+                } else {
+                        delim = '\n';
+                }
+        }
+        string token;
+        stringstream ss (feat);
+        while (getline (ss, token, delim)) {
+                this->features.push_back (token);
+        }
+}
 //@}
 
 /*!
