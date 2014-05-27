@@ -160,6 +160,66 @@ TextOption::setMaxLength (const int i)
 //@}
 
 /*!
+ * ListOption
+ */
+//@{
+
+ListOption::ListOption (const string& name,
+                        const string& label,
+                        function<optList()> f)
+        : DatastreamOption (name, label, "", false)
+{
+        this->type = DatastreamOption::OPTION_LIST;
+        this->setOptionListBuilder (f);
+}
+
+ListOption::~ListOption()
+{
+}
+
+//
+// Accessors
+//
+
+void
+ListOption::setOptionListBuilder (function<optList()> f)
+{
+        this->optionListBuilder = f;
+}
+
+//
+// Methods
+//
+
+string
+ListOption::show (bool asHtml) const
+{
+        stringstream ss;
+        ss << this->getLabel() << ":";
+
+        optList l;
+        try {
+                l = this->optionListBuilder();
+        } catch (const std::bad_function_call& e) {
+                // No builder assigned
+        }
+        if (!l.empty()) {
+                string val (this->getValue());
+                for (auto i : l) {
+                        ss << "\n- " << i.second << " (" << i.first << ")";
+                        if (i.second == val) {
+                                ss << " *";
+                        }
+                }
+        } else {
+                ss << " No options available";
+        }
+        return ss.str();
+}
+
+//@}
+
+/*!
  * BoolOption
  */
 //@{

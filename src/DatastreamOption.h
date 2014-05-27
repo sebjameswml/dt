@@ -15,6 +15,7 @@
 #include <string>
 #include <list>
 #include <memory>
+#include <functional>
 
 namespace dt {
 
@@ -234,6 +235,63 @@ namespace dt {
 
                 /*! \brief The maximum length of this TextOption. */
                 int maxLength;
+        };
+
+        /*!
+         * \headerfile DatastreamOption.h "DatastreamOption.h"
+         *
+         * \brief A list format filter option in the Data Transport
+         * system.
+         *
+         * \c ListOption defines a list-based option for a filter
+         * feature in the Data Transport system.
+         *
+         * \todo Allow client to specify a function object that can be
+         * used to get a list of the available options?
+         */
+        class ListOption : public DatastreamOption
+        {
+        public:
+                /*!
+                 * \brief List of label/value pairs for use in an option list.
+                 */
+                typedef std::list<std::pair<std::string, std::string> > optList;
+
+                /*!
+                 * Constructor
+                 */
+                ListOption (const std::string& name,
+                            const std::string& label,
+                            std::function<optList()> = nullptr);
+
+                /*!
+                 * Destructor
+                 * \note Declared virtual to ensure proper
+                 * cleanup of derived class objects.
+                 */
+                virtual ~ListOption();
+
+                /*!
+                 * \brief Show this ListOption.
+                 */
+                std::string show (bool asHtml = false) const;
+
+                /*!
+                 * \name Private attribute accessor methods
+                 */
+                //@{
+
+                /*!
+                 * \brief Set the function object that will provide
+                 * the list of options.
+                 */
+                void setOptionListBuilder (std::function<optList()>);
+
+                //@}
+
+        private:
+
+                std::function<optList(void)> optionListBuilder;
         };
 
         /*!

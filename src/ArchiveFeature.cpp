@@ -41,7 +41,9 @@ ArchiveFeature::ArchiveFeature (void)
                 ps->add (pShareOpt);
                 pShareOpt.reset (new TextOption ("archiveShare_shareAddr", "Server IP"));
                 ps->add (pShareOpt);
-                // TODO add Share type - option list
+                pShareOpt.reset (new ListOption ("archiveShare_shareType", "Share type"));
+                                                 //, bind(&wml::Share::getShareTypeOptions)));
+                ps->add (pShareOpt);
         }
         this->addOption (pOpt);
 
