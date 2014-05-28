@@ -23,26 +23,38 @@ extern "C" {
 
 using namespace std;
 
-#define TESTFILTER_FEATURES "archive destshare"
+#define TESTFILTER_FEATURES "archive dcc"
 
 // We make a struct of parameters for holding options parsed by popt.
 struct params {
-        char * filename;
+        char * datastream;
+        char * data;
+        char * user;
+        char * title;
         int listFeatures;
+
+        char * archive;
+        char * dcc;
 };
 
 // And we have to zero it out before we start.
 void zeroParams (struct params * p)
 {
-        p->filename = nullptr;
+        p->datastream = nullptr;
+        p->data = nullptr;
+        p->user = nullptr;
+        p->title = nullptr;
         p->listFeatures = 0;
+
+        p->archive = nullptr;
+        p->dcc = nullptr;
 }
 
 void usage (poptContext optCon, const string& error, const string& addl)
 {
         poptPrintUsage(optCon, stderr, 0);
         if (!error.empty()) {
-                fprintf(stderr, "%s%s%s",
+                fprintf(stderr, "%s%s%s\n",
                         error.c_str(), (addl.empty() ? "" : ": "), addl.c_str());
         }
         poptFreeContext(optCon);
@@ -58,21 +70,35 @@ int main (int argc, char * argv[])
 
                 // Filter options
 
-                // {"post", 'p',
-                //  POPT_ARG_STRING, &(f.post), 0,
-                //  "The POST variables, comma separated: key1=val1,key2=val2"},
+                {"data", 'd',
+                 POPT_ARG_STRING, &(p.data), 'd',
+                 "Data file name", "myfile"},
 
-                // {"get", 'g',
-                //  POPT_ARG_STRING, &(f.get), 0,
-                //  "The GET variables, comma separated: key1=val1,key2=val2"},
+                {"datastream", 's',
+                 POPT_ARG_STRING, &(p.datastream), 's',
+                 "Datastream ID", "mydatastream"},
 
-                {"filename", 'f',
-                 POPT_ARG_STRING, &(p.filename), 'f',
-                 "The data filename", "myfile"},
+                {"title", 't',
+                 POPT_ARG_STRING, &(p.title), 't',
+                 "Job title", "mytitle"},
+
+                {"user", 'u',
+                 POPT_ARG_STRING, &(p.user), 'u',
+                 "User name", "anonymous"},
 
                 {"list-features", 'l',
                  POPT_ARG_NONE, &(p.listFeatures), 'l',
                  "Display a list of features"},
+
+                // Filter features
+
+                {"archive", '\0',
+                 POPT_ARG_STRING, &(p.archive), '\0',
+                 "Archive feature options", "\"opt1=val1,opt2=val2,...\""},
+
+                {"dcc", '\0',
+                 POPT_ARG_STRING, &(p.dcc), '\0',
+                 "DCC feature options", "\"opt1=val1,opt2=val2,...\""},
 
                 POPT_TABLEEND
         };
@@ -97,9 +123,9 @@ int main (int argc, char * argv[])
 
         if (p.listFeatures) {
                 fprintf(stdout, "%s\n", TESTFILTER_FEATURES);
-        // } else if (p.filename == nullptr) {
-        //         usage (con, "Please specify a filename", "");
-        //         return 1;
+        } else if (p.data == nullptr) {
+                usage (con, "Please specify a data file", "");
+                return 1;
         }
 
         // Free up the memory associated with cmd line parsing.

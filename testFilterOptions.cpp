@@ -10,26 +10,15 @@ std::ofstream DBGSTREAM;
 #include "src/Filter.h"
 #include "src/FilterFactory.h"
 #include "src/FilterFeature.h"
-#include "src/ArchiveFeature.h"
+#include "src/FilterFeatureFactory.h"
 
 using namespace std;
 using namespace dt;
 
-// FilterFeature factory method
-unique_ptr<FilterFeature>
-createFeature (const string& feature)
-{
-        unique_ptr<FilterFeature> pFeat;
-        if (feature.find ("archive") != string::npos) {
-                pFeat.reset (new ArchiveFeature());
-        }
-        return pFeat;
-}
-
 void
 displayFeature (const Datastream& ds, const string& filter, const string& feature)
 {
-        unique_ptr<FilterFeature> pFeat (createFeature (feature));
+        unique_ptr<FilterFeature> pFeat (FilterFeatureFactory::create (feature));
         if (!pFeat.get()) {
                 cout << "* Unknown feature: " << feature << endl;
                 return;

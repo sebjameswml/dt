@@ -5,6 +5,7 @@
 #include "Filter.h"
 #include "Datastream.h"
 #include "Data.h"
+#include "FilterFeatureFactory.h"
 
 using namespace std;
 using namespace dt;
@@ -16,10 +17,6 @@ using namespace dt;
 BaseFilter::BaseFilter(const string& thePath)
         : path (thePath)
 {
-        // TODO Use a factory to assign features for given filters
-        if (this->path.find ("wmlpdf") != string::npos) {
-                this->features.push_back ("archive");
-        }
 }
 
 BaseFilter::~BaseFilter()
@@ -95,13 +92,6 @@ BaseFilter::setFeatures (const string& feat, char delim)
 Filter::Filter(const string& thePath)
         : BaseFilter (thePath)
 {
-        // TODO Use a factory to assign features for given filters.
-        // Factory could call filter program with '--features' option
-        // to return a list of supported features.
-
-        // if (this->path.find ("wmlpdf") != string::npos) {
-        //         this->features.push_back ("archive");
-        // }
 }
 
 Filter::~Filter()
@@ -131,6 +121,30 @@ Filter::populateArgs (const Datastream& ds,
         // values for the specified datastream.
 
         // Add these option/value pairs as arguments.
-}
+        auto i (this->beginFeatures()), end (this->endFeatures());
+        while (i != end) {
 
+                unique_ptr<FilterFeature> pFeat (FilterFeatureFactory::create (*i));
+
+                if (pFeat.get() && pFeat->isConfigurable()) {
+                        // Populate with the options set for the Datastream ds.
+                        list<pair<string, string> > l (pFeat->populateOptions (ds, this->getPath()));
+
+                        stringstream ss;
+                        ss << "--" << pFeat->getName() << "=\"";
+                        bool first (true);
+                        for (auto i : l) {
+                                if (!first) {
+                                        ss << ",";
+                                } else {
+                                        first = false;
+                                }
+                                ss << i.first << "=" << i.second;
+                        }
+                        ss << "\"";
+                        args.push_back (ss.str());
+                }
+                ++i;
+        }
+}
 //@}

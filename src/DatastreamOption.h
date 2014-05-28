@@ -43,6 +43,8 @@ namespace dt {
         {
         public:
 
+                typedef std::list<std::pair<std::string, std::string> > keyValList;
+
                 /*!
                  * The type or format for specifying a filter option.
                  */
@@ -76,9 +78,9 @@ namespace dt {
                  * \brief Populate this DatastreamOption from the
                  * stored Datastream settings.
                  */
-                virtual void populate (const Datastream& ds,
-                                       const std::string& filter,
-                                       const std::string& feature);
+                virtual keyValList populate (const Datastream& ds,
+                                             const std::string& program,
+                                             const std::string& feature = "");
 
                 /*!
                  * \brief Show this DatastreamOption.
@@ -476,9 +478,9 @@ namespace dt {
                  * \brief Populate this CompositeOption from the
                  * stored Datastream settings.
                  */
-                void populate (const Datastream& ds,
-                               const std::string& filter,
-                               const std::string& feature);
+                keyValList populate (const Datastream& ds,
+                                     const std::string& program,
+                                     const std::string& feature = "");
 
                 /*!
                  * \brief Show this CompositeOption.

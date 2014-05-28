@@ -66,7 +66,9 @@ namespace dt {
                  * \brief Populate the options for this feature for
                  * the specified Datastream and filter path.
                  */
-                void populateOptions (const Datastream& ds, const std::string& filt);
+                std::list<std::pair<std::string, std::string> >
+                populateOptions (const Datastream& ds,
+                                 const std::string& filt);
 
                 /*!
                  * \name Private attribute accessor methods

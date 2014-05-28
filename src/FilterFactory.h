@@ -22,6 +22,7 @@ namespace dt {
         /*! \name Forward declarations */
         //@{
         class BaseFilter;
+        class Backend;
         //@}
 
         /*!
@@ -44,6 +45,15 @@ namespace dt {
                 static std::unique_ptr<BaseFilter> create (const std::string& path);
 
                 /*!
+                 * \brief Create a smart pointer to a backend object
+                 * with the specified path.
+                 *
+                 * \note Using std::unique_ptr i.e. assuming single
+                 * owner of resource.
+                 */
+                static std::unique_ptr<Backend> createBackend (const std::string& path);
+
+                /*!
                  * \brief Store the specified return code to
                  * FilterFactory::returnCode.
                  */
@@ -56,6 +66,10 @@ namespace dt {
                 static int returnCode;
 
         private:
+
+                static void runProcess (wml::Process& p,
+                                        const std::string& path,
+                                        const std::list<std::string>& args);
 
         };
 

@@ -34,14 +34,18 @@ DatastreamOption::~DatastreamOption()
 // Methods
 //
 
-void
+DatastreamOption::keyValList
 DatastreamOption::populate (const Datastream& ds,
-                            const string& filter,
+                            const string& program,
                             const string& feature)
 {
         // Get stored value for the specified filter and feature:
-        string val (ds.getOption (filter, feature, this->getName()));
-        this->setValue (val);
+        string val (ds.getOption (program, feature, this->getName()));
+        if (val != "Not found") {
+                this->setValue (val);
+        }
+        DatastreamOption::keyValList l = { { this->getName(), this->getValue() } };
+        return l;
 }
 
 string
@@ -372,14 +376,17 @@ CompositeOption::~CompositeOption()
 // Methods
 //
 
-void
+DatastreamOption::keyValList
 CompositeOption::populate (const Datastream& ds,
-                           const string& filter,
+                           const string& program,
                            const string& feature)
 {
+        DatastreamOption::keyValList l, li;
         for (auto& i : this->options) {
-                i->populate (ds, filter, feature);
+                li = i->populate (ds, program, feature);
+                l.splice (l.end(), li);
         }
+        return l;
 }
 
 string

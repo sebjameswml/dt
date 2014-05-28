@@ -35,12 +35,15 @@ FilterFeature::isConfigurable (void)
         return !this->options.empty();
 }
 
-void
+list<pair<string, string> >
 FilterFeature::populateOptions (const Datastream& ds, const string& filter)
 {
+        list<pair<string, string> > l, li;
         for (auto& i : this->options) {
-                i->populate (ds, filter, this->getName());
+                li = i->populate (ds, filter, this->getName());
+                l.splice (l.end(), li);
         }
+        return l;
 }
 
 //

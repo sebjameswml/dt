@@ -1,12 +1,12 @@
 /* -*-c++-*- */
 /*!
- * \file Filter.h
+ * \file Backend.h
  *
- * \brief Declares the classes \c BaseFilter and \c Filter.
+ * \brief Declares the classes \c BaseBackend and \c Backend.
  */
 
-#ifndef _FILTER_H_
-#define _FILTER_H_
+#ifndef _BACKEND_H_
+#define _BACKEND_H_
 
 #ifdef __GNUG__
 # pragma interface
@@ -16,61 +16,77 @@
 #include <list>
 #include <memory>
 
-#include "FilterFeature.h"
-
 namespace dt {
 
         /*! \name Forward declarations */
         //@{
         class Datastream;
         class Data;
+        class DatastreamOption;
         //@}
 
         /*!
-         * \headerfile Filter.h "Filter.h"
+         * \headerfile Backend.h "Backend.h"
          *
-         * \brief A basic filter in the Data Transport system.
+         * \brief A basic backend in the Data Transport system.
          *
-         * A filter is applied to data in the data transport to
-         * perform some action such as conversion between different
-         * formats.
+         * A backend is applied to output from the data transport
+         * filter chain in order to deliver the data in a specific
+         * way.
          */
-        class BaseFilter
+        class Backend
         {
         public:
 
-                typedef std::list<std::string>::const_iterator ConstFeatureIter;
+                typedef std::list<std::shared_ptr<DatastreamOption> > optionList;
+                typedef optionList::const_iterator ConstOptionIter;
 
                 /*!
                  * Constructor
                  */
-                BaseFilter (const std::string& path);
+                Backend (const std::string& path);
 
                 /*!
                  * Destructor
                  * \note Declared virtual to ensure proper
                  * cleanup of derived class objects.
                  */
-                virtual ~BaseFilter();
+                virtual ~Backend();
 
                 /*!
-                 * \brief Populate argument list for this filter.
+                 * \brief Populate argument list for this backend.
                  *
-                 * Populate the argument list for this filter, based
+                 * Populate the argument list for this backend, based
                  * on the specified Datastream and Data objects, from
-                 * which the filter arguments required for the filter
+                 * which the backend arguments required for the backend
                  * may be extracted.
                  *
-                 * The implementation sets up the standard CUPS filter
+                 * The implementation sets up the standard CUPS backend
                  * argument list: queue, job id, user, title, copies,
                  * options.
                  *
                  * Derived implementations may specify arguments to
-                 * control filter features etc.
+                 * control backend features etc.
                  */
                 virtual void populateArgs (const Datastream& ds,
                                            const Data& d,
                                            std::list<std::string>& args);
+
+
+                /*!
+                 * \brief Whether this backend is configurable.
+                 *
+                 * A backend is configurable if it has one or more
+                 * options.
+                 */
+                bool isConfigurable (void);
+
+                /*!
+                 * \brief Populate the options for this backend for
+                 * the specified Datastream.
+                 */
+                std::list<std::pair<std::string, std::string> >
+                        populateOptions (const Datastream& ds);
 
                 /*!
                  * \name Private attribute accessor methods
@@ -78,32 +94,23 @@ namespace dt {
                 //@{
 
                 /*!
-                 * \brief Get the path of this filter.
+                 * \brief Get the path of this backend.
                  * @return The value of this->path.
                  */
                 std::string getPath (void) const;
 
                 /*!
-                 * \brief Set the path of this filter.
+                 * \brief Set the path of this backend.
                  * @param s The new value of this->path.
                  */
                 void setPath (const std::string& s);
 
-                /*!
-                 * \brief Get the list of features for this filter.
-                 * @return The value of this->features.
-                 */
-                std::list<std::string> getFeatures (void) const;
 
                 /*!
-                 * \brief Set the features for this filter.
-                 * \param feat List of features with which to populate
-                 * this->features.
-                 * \param delim \optional Delimiter character. If not
-                 * specified, a delimiter is selected automatically
-                 * from amongst the following characters: " ,;:|@#+%$"
+                 * \brief Add an option to this->options.
+                 * @param pOpt The option to be added.
                  */
-                void setFeatures (const std::string& feat, char delim = '\0');
+                void addOption (std::shared_ptr<DatastreamOption> pOpt);
 
                 //@}
 
@@ -111,8 +118,8 @@ namespace dt {
                  * \name Iterators for private containers
                  */
                 //@{
-                ConstFeatureIter beginFeatures() const { return features.cbegin(); }
-                ConstFeatureIter endFeatures() const { return features.cend(); }
+                ConstOptionIter beginOptions() const { return options.cbegin(); }
+                ConstOptionIter endOptions() const { return options.cend(); }
                 //@}
 
         private:
@@ -120,47 +127,49 @@ namespace dt {
                 /*! \brief Path */
                 std::string path;
 
-                //std::list<std::shared_ptr<FilterFeature> > features;
-                std::list<std::string> features;
+                /*! \brief List of options for this backend. */
+                optionList options;
 
+                /*! \brief List of tasks for this backend. */
+                //std::list<FilterTask*> tasks;
         };
 
         /*!
-         * \headerfile Filter.h "Filter.h"
+         * \headerfile Backend.h "Backend.h"
          *
-         * \brief An extended filter in the Data Transport system.
+         * \brief An extended backend in the Data Transport system.
          *
-         * \c Filter defines an extended filter type which can be
-         * used as an interface to filter programs in the data
+         * \c BackendPlus defines an extended backend type which can be
+         * used as an interface to backend programs in the data
          * transport system, enabling configurable features, custom
          * parameters, unique data ID, data logging, etc.
          */
-        class Filter : public BaseFilter
+        class BackendPlus : public Backend
         {
         public:
 
                 /*!
                  * Constructor
                  */
-                Filter (const std::string& path);
+                BackendPlus (const std::string& path);
 
                 /*!
                  * Destructor
                  * \note Declared virtual to ensure proper
                  * cleanup of derived class objects.
                  */
-                virtual ~Filter();
+                virtual ~BackendPlus();
 
                 /*!
-                 * \brief Populate argument list for this filter.
+                 * \brief Populate argument list for this backend.
                  *
-                 * Populate the argument list for this filter, based
+                 * Populate the argument list for this backend, based
                  * on the specified Datastream and Data objects, from
-                 * which the filter arguments required for the filter
+                 * which the backend arguments required for the backend
                  * may be extracted.
                  *
                  * Specifies arguments to control the features for
-                 * this filter, as well as passing DT specific
+                 * this backend, as well as passing DT specific
                  * attributes such as unique data ID and data logging
                  * parameters.
                  */
@@ -181,4 +190,4 @@ namespace dt {
 
 } // dt namespace
 
-#endif // _FILTER_H_
+#endif // _BACKEND_H_

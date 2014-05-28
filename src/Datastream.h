@@ -152,10 +152,21 @@ namespace dt {
 
                 /*!
                  * \brief Set the filter path for this datastream.
-                 * @param f The new value of this->filterPath.
+                 * @param s The new value of this->filterPath.
                  */
                 void setFilterPath (const std::string& s);
 
+                /*!
+                 * \brief Get the backend for this datastream.
+                 * @return The value of this->backend.
+                 */
+                std::string getBackend (void) const;
+
+                /*!
+                 * \brief Set the backend for this datastream.
+                 * @param s The new value of this->backend.
+                 */
+                void setBackend (const std::string& s);
                 //@}
 
         private:

@@ -18,6 +18,7 @@
 
 #include "Datastream.h"
 #include "Filter.h"
+#include "Backend.h"
 #include "FilterFactory.h"
 
 using namespace std;
@@ -196,8 +197,19 @@ Datastream::process (Data& data)
                 // Apply backend, if specified
                 if (!this->backend.empty()) {
 
+                        // Use a factory to get a pointer to a
+                        // Backend, which can be used to get the
+                        // appropriate argument list for the backend.
+                        unique_ptr<Backend> pb (FilterFactory::createBackend (this->backend));
+                        if (pb.get() == nullptr) {
+                                throw runtime_error ("Error creating backend object");
+                        }
+
+                        string path (pb->getPath());
+
+                        pb->populateArgs (*this, data, args);
+
                         // Apply the backend
-                        string path (this->backend);
 
                         this->p.reset (true); // keepCallbacks = true
 
@@ -370,7 +382,7 @@ Datastream::setupFilterProcessCallbacks (void)
 }
 
 string
-Datastream::getOption (const string& filter,
+Datastream::getOption (const string& program,
                        const string& feature,
                        const string& option) const
 {
@@ -379,14 +391,16 @@ Datastream::getOption (const string& filter,
         }
         vector<pair<string, string> > groups = {
                 { "Datastream", "" }
-                , { filter, "" } // ID? - filter could be applied more than once?
-                , { feature, "" }
+                , { program, "" } // ID? - filter could be applied more than once?
         };
+        if (!feature.empty()) {
+                groups.push_back ({ feature, "" });
+        }
         return this->settings.getSetting (groups, option);
 }
 
 void
-Datastream::setOption (const string& filter,
+Datastream::setOption (const string& program,
                        const string& feature,
                        const string& option,
                        const string& value)
@@ -396,9 +410,11 @@ Datastream::setOption (const string& filter,
         }
         vector<pair<string, string> > groups = {
                 { "Datastream", "" }
-                , { filter, "" } // ID? - filter could be applied more than once?
-                , { feature, "" }
+                , { program, "" } // ID? - filter could be applied more than once?
         };
+        if (!feature.empty()) {
+                groups.push_back ({ feature, "" });
+        }
         this->settings.setSetting (groups, option, value);
         this->settings.write();
 }
@@ -483,4 +499,16 @@ void
 Datastream::setFilterPath (const string& s)
 {
         this->filterPath = s;
+}
+
+string
+Datastream::getBackend (void) const
+{
+        return this->backend;
+}
+
+void
+Datastream::setBackend (const string& s)
+{
+        this->backend = s;
 }

@@ -41,6 +41,7 @@ int main (int argc, char** argv) {
         cout << "Datastream name: " << ds.getName() << endl;
 
         ds.setFilters (filters);
+        ds.setBackend ("/usr/lib/cups/backend/wmlsbe");
         ds.process (d);
 
         DBGCLOSE();
