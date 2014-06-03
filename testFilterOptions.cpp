@@ -15,6 +15,68 @@ std::ofstream DBGSTREAM;
 using namespace std;
 using namespace dt;
 
+
+class StdoutDatastreamOptionVisitor : public DatastreamOptionVisitor
+{
+public:
+
+        void visitFeature (const FilterFeature& feat)
+                {
+                        FilterFeature::ConstOptionIter iOpt (feat.beginOptions()),
+                                optEnd (feat.endOptions());
+                        while (iOpt != optEnd) {
+                                (*iOpt)->accept(*this);
+                                ++iOpt;
+                        }
+                        cout << endl;
+                }
+
+        void visit (TextOption& o) const
+                {
+                        cout << "\t" << o.getLabel() << ": " << o.getValue() << endl;
+                }
+        void visit (BoolOption& o) const
+                {
+                        cout << "\t" << o.getLabel() << ": " << o.getValue() << endl;
+                }
+        void visit (UIntOption& o) const
+                {
+                        cout << "\t" << o.getLabel() << ": " << o.getValue() << endl;
+                }
+        void visit (ListOption& o) const
+                {
+                        cout << "\t" << o.getLabel() << ":" << endl;
+                        ListOption::optList l (o.getOptionList());
+                        if (l.empty()) {
+                                cout << "\t\t! No options available" << endl;
+                        } else {
+                                string val (o.getValue());
+                                for (auto i : l) {
+                                        cout << "\t\t- " << i.second << " (" << i.first << ")";
+                                        if (i.second == val) {
+                                                cout << " *";
+                                        }
+                                        cout << endl;
+                                }
+                        }
+                }
+        void visit (CompositeOption& o) const
+                {
+                        cout << "\t" << o.getLabel() << " (group):" << endl;
+
+                        // Query: iterate through options here? Gives
+                        // more control over display than leaving it
+                        // to CompositeOption::accept() to call
+                        // visit() for each option, but relies on
+                        // knowing more about CompositeOption.
+                        // list<shared_ptr<DatastreamOption> >& opts = o.getOptions();
+                        // for (auto i : opts) {
+                        //         ss << "\n- " << i->accept (*this);
+                        // }
+
+                }
+};
+
 void
 displayFeature (const Datastream& ds, const string& filter, const string& feature)
 {
@@ -39,13 +101,8 @@ displayFeature (const Datastream& ds, const string& filter, const string& featur
                 cout << "\tThis feature is not configurable" << endl;
         }
 
-        FilterFeature::ConstOptionIter iOpt (pFeat->beginOptions()),
-                optEnd (pFeat->endOptions());
-        while (iOpt != optEnd) {
-                cout << "\t" << (*iOpt)->show() << endl;
-                ++iOpt;
-        }
-        cout << endl;
+        StdoutDatastreamOptionVisitor visitor;
+        visitor.visitFeature (*pFeat);
 }
 
 int main (int argc, char** argv) {

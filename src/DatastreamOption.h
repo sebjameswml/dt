@@ -23,6 +23,7 @@ namespace dt {
          * \brief Forward declarations.
          */
         class Datastream;
+        class DatastreamOptionVisitor;
 
         /*!
          * \headerfile DatastreamOption.h "DatastreamOption.h"
@@ -83,9 +84,9 @@ namespace dt {
                                              const std::string& feature = "");
 
                 /*!
-                 * \brief Show this DatastreamOption.
+                 * \brief Accept a visit from the specified visitor.
                  */
-                virtual std::string show (bool asHtml = false) const;
+                virtual void accept (const DatastreamOptionVisitor& visitor) = 0;
 
                 /*!
                  * \name Private attribute accessor methods
@@ -215,6 +216,11 @@ namespace dt {
                 virtual ~TextOption();
 
                 /*!
+                 * \brief Accept a visit from a DatastreamOptionVisitor.
+                 */
+                void accept (const DatastreamOptionVisitor& visitor);
+
+                /*!
                  * \name Private attribute accessor methods
                  */
                 //@{
@@ -274,9 +280,18 @@ namespace dt {
                 virtual ~ListOption();
 
                 /*!
-                 * \brief Show this ListOption.
+                 * \brief Accept a visit from a DatastreamOptionVisitor.
                  */
-                std::string show (bool asHtml = false) const;
+                void accept (const DatastreamOptionVisitor& visitor);
+
+                /*!
+                 * \brief Get the list of options by invoking
+                 * this->optionListBuilder.
+                 *
+                 * \note If this->optionListBuilder has not been
+                 * assigned, an empty list is returned.
+                 */
+                optList getOptionList (void) const;
 
                 /*!
                  * \name Private attribute accessor methods
@@ -322,6 +337,11 @@ namespace dt {
                  * cleanup of derived class objects.
                  */
                 virtual ~BoolOption();
+
+                /*!
+                 * \brief Accept a visit from a DatastreamOptionVisitor.
+                 */
+                void accept (const DatastreamOptionVisitor& visitor);
 
                 /*!
                  * \name Private attribute accessor methods
@@ -398,6 +418,11 @@ namespace dt {
                  * cleanup of derived class objects.
                  */
                 virtual ~UIntOption();
+
+                /*!
+                 * \brief Accept a visit from a DatastreamOptionVisitor.
+                 */
+                void accept (const DatastreamOptionVisitor& visitor);
 
                 /*!
                  * \name Private attribute accessor methods
@@ -483,9 +508,9 @@ namespace dt {
                                      const std::string& feature = "");
 
                 /*!
-                 * \brief Show this CompositeOption.
+                 * \brief Accept a visit from a DatastreamOptionVisitor.
                  */
-                std::string show (bool asHtml = false) const;
+                void accept (const DatastreamOptionVisitor& visitor);
 
                 /*!
                  * \name Composite operations
@@ -513,6 +538,30 @@ namespace dt {
                 std::list<std::shared_ptr<DatastreamOption> > options;
         };
 
+
+        /*!
+         * \headerfile DatastreamOption.h "DatastreamOption.h"
+         *
+         * \brief Interface for visiting a DatastreamOption in the
+         * Data Transport system.
+         */
+        class DatastreamOptionVisitor
+        {
+        public:
+
+                /*! Destructor declared virtual to ensure proper
+                 *  cleanup in derived classes. */
+                virtual ~DatastreamOptionVisitor();
+
+                virtual void visit (TextOption&) const = 0;
+                virtual void visit (ListOption&) const = 0;
+                virtual void visit (BoolOption&) const = 0;
+                virtual void visit (UIntOption&) const = 0;
+                virtual void visit (CompositeOption&) const = 0;
+
+        private:
+
+        };
 
 } // dt namespace
 

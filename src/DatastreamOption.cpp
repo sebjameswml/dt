@@ -48,14 +48,6 @@ DatastreamOption::populate (const Datastream& ds,
         return l;
 }
 
-string
-DatastreamOption::show (bool asHtml) const
-{
-        stringstream ss;
-        ss << this->getLabel() << ": " << this->getValue();
-        return ss.str();
-}
-
 //
 // Accessors
 //
@@ -147,6 +139,16 @@ TextOption::~TextOption()
 }
 
 //
+// Methods
+//
+
+void
+TextOption::accept (const DatastreamOptionVisitor& visitor)
+{
+        visitor.visit (*this);
+}
+
+//
 // Accessors
 //
 int
@@ -182,6 +184,16 @@ ListOption::~ListOption()
 }
 
 //
+// Methods
+//
+
+void
+ListOption::accept (const DatastreamOptionVisitor& visitor)
+{
+        visitor.visit (*this);
+}
+
+//
 // Accessors
 //
 
@@ -191,34 +203,16 @@ ListOption::setOptionListBuilder (function<optList()> f)
         this->optionListBuilder = f;
 }
 
-//
-// Methods
-//
-
-string
-ListOption::show (bool asHtml) const
+ListOption::optList
+ListOption::getOptionList (void) const
 {
-        stringstream ss;
-        ss << this->getLabel() << ":";
-
         optList l;
         try {
                 l = this->optionListBuilder();
         } catch (const std::bad_function_call& e) {
                 // No builder assigned
         }
-        if (!l.empty()) {
-                string val (this->getValue());
-                for (auto i : l) {
-                        ss << "\n- " << i.second << " (" << i.first << ")";
-                        if (i.second == val) {
-                                ss << " *";
-                        }
-                }
-        } else {
-                ss << " No options available";
-        }
-        return ss.str();
+        return l;
 }
 
 //@}
@@ -240,6 +234,16 @@ BoolOption::BoolOption (const string& name,
 
 BoolOption::~BoolOption()
 {
+}
+
+//
+// Methods
+//
+
+void
+BoolOption::accept (const DatastreamOptionVisitor& visitor)
+{
+        visitor.visit (*this);
 }
 
 //
@@ -303,6 +307,16 @@ UIntOption::UIntOption (const string& name,
 
 UIntOption::~UIntOption()
 {
+}
+
+//
+// Methods
+//
+
+void
+UIntOption::accept (const DatastreamOptionVisitor& visitor)
+{
+        visitor.visit (*this);
 }
 
 //
@@ -376,6 +390,15 @@ CompositeOption::~CompositeOption()
 // Methods
 //
 
+void
+CompositeOption::accept (const DatastreamOptionVisitor& visitor)
+{
+        visitor.visit (*this);
+        for(auto i : this->options) {
+                i->accept (visitor);
+        }
+}
+
 DatastreamOption::keyValList
 CompositeOption::populate (const Datastream& ds,
                            const string& program,
@@ -389,21 +412,19 @@ CompositeOption::populate (const Datastream& ds,
         return l;
 }
 
-string
-CompositeOption::show (bool asHtml) const
-{
-        stringstream ss;
-        ss << this->getLabel() << " (group):";
-        for (auto i : this->options) {
-                ss << "\n- " << i->show (asHtml);
-        }
-        return ss.str();
-}
-
 void
 CompositeOption::add (shared_ptr<DatastreamOption> option)
 {
         this->options.push_back (option);
 }
 
+//@}
+
+/*!
+ * DatastreamOptionVisitor
+ */
+//@{
+DatastreamOptionVisitor::~DatastreamOptionVisitor()
+{
+}
 //@}
