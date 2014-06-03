@@ -394,9 +394,6 @@ void
 CompositeOption::accept (const DatastreamOptionVisitor& visitor)
 {
         visitor.visit (*this);
-        for(auto i : this->options) {
-                i->accept (visitor);
-        }
 }
 
 DatastreamOption::keyValList
@@ -416,6 +413,18 @@ void
 CompositeOption::add (shared_ptr<DatastreamOption> option)
 {
         this->options.push_back (option);
+}
+
+CompositeOption::const_iterator
+CompositeOption::begin() const
+{
+        return (this->options.cbegin());
+}
+
+CompositeOption::const_iterator
+CompositeOption::end() const
+{
+        return (this->options.cend());
 }
 
 //@}

@@ -64,16 +64,14 @@ public:
                 {
                         cout << "\t" << o.getLabel() << " (group):" << endl;
 
-                        // Query: iterate through options here? Gives
-                        // more control over display than leaving it
-                        // to CompositeOption::accept() to call
-                        // visit() for each option, but relies on
-                        // knowing more about CompositeOption.
-                        // list<shared_ptr<DatastreamOption> >& opts = o.getOptions();
-                        // for (auto i : opts) {
-                        //         ss << "\n- " << i->accept (*this);
-                        // }
-
+                        // We iterate through the child options here
+                        // to give more control over display.
+                        CompositeOption::const_iterator iOpt (o.begin()), optEnd (o.end());
+                        while (iOpt != optEnd) {
+                                cout << "\t";
+                                (*iOpt)->accept (*this);
+                                ++iOpt;
+                        }
                 }
 };
 

@@ -487,6 +487,10 @@ namespace dt {
         class CompositeOption : public DatastreamOption
         {
         public:
+
+                typedef std::list<std::shared_ptr<DatastreamOption> > optionList;
+                typedef optionList::const_iterator const_iterator;
+
                 /*!
                  * Constructor
                  */
@@ -533,10 +537,18 @@ namespace dt {
 
                 //@}
 
+                /*!
+                 * \name Iterators for option list container
+                 */
+                //@{
+                const_iterator begin() const;
+                const_iterator end() const;
+                //@}
+
         private:
 
                 /*! \brief The options in this option group */
-                std::list<std::shared_ptr<DatastreamOption> > options;
+                optionList options;
         };
 
 
