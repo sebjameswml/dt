@@ -56,11 +56,11 @@ DccFeature::~DccFeature()
 // Methods
 //
 
-ListOption::optList
+ListOption::valueList
 DccFeature::getProfilesDummy (void)
 {
-        ListOption::optList l = { {"0", "None"}
-                                  , {"1", "Alpha"}
-                                  , {"2", "Beta"} };
+        ListOption::valueList l = { {"0", "None"}
+                                    , {"1", "Alpha"}
+                                    , {"2", "Beta"} };
         return l;
 }

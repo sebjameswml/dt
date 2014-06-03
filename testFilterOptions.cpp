@@ -46,7 +46,7 @@ public:
         void visit (ListOption& o) const
                 {
                         cout << "\t" << o.getLabel() << ":" << endl;
-                        ListOption::optList l (o.getOptionList());
+                        ListOption::valueList l (o.getValueList());
                         if (l.empty()) {
                                 cout << "\t\t! No options available" << endl;
                         } else {

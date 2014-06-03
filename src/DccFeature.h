@@ -39,7 +39,7 @@ namespace dt {
                  */
                 virtual ~DccFeature();
 
-                static ListOption::optList getProfilesDummy (void);
+                static ListOption::valueList getProfilesDummy (void);
 
                 /*!
                  * \name Private attribute accessor methods

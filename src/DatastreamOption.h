@@ -254,23 +254,24 @@ namespace dt {
          * \c ListOption defines a list-based option for a filter
          * feature in the Data Transport system.
          *
-         * \todo Allow client to specify a function object that can be
-         * used to get a list of the available options?
+         * Allows client to specify a function object that can be used
+         * to get a list of the available values for the option.
          */
         class ListOption : public DatastreamOption
         {
         public:
                 /*!
-                 * \brief List of label/value pairs for use in an option list.
+                 * \brief List of available values for the option,
+                 * given as label/value pairs.
                  */
-                typedef std::list<std::pair<std::string, std::string> > optList;
+                typedef std::list<std::pair<std::string, std::string> > valueList;
 
                 /*!
                  * Constructor
                  */
                 ListOption (const std::string& name,
                             const std::string& label,
-                            std::function<optList()> = nullptr);
+                            std::function<valueList()> = nullptr);
 
                 /*!
                  * Destructor
@@ -285,13 +286,13 @@ namespace dt {
                 void accept (const DatastreamOptionVisitor& visitor);
 
                 /*!
-                 * \brief Get the list of options by invoking
-                 * this->optionListBuilder.
+                 * \brief Get the list of possible values by invoking
+                 * this->valueListBuilder.
                  *
-                 * \note If this->optionListBuilder has not been
+                 * \note If this->valueListBuilder has not been
                  * assigned, an empty list is returned.
                  */
-                optList getOptionList (void) const;
+                valueList getValueList (void) const;
 
                 /*!
                  * \name Private attribute accessor methods
@@ -300,15 +301,15 @@ namespace dt {
 
                 /*!
                  * \brief Set the function object that will provide
-                 * the list of options.
+                 * the list of possible values.
                  */
-                void setOptionListBuilder (std::function<optList()>);
+                void setValueListBuilder (std::function<valueList()>);
 
                 //@}
 
         private:
 
-                std::function<optList(void)> optionListBuilder;
+                std::function<valueList(void)> valueListBuilder;
         };
 
         /*!

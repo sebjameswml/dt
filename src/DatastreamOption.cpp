@@ -172,11 +172,11 @@ TextOption::setMaxLength (const int i)
 
 ListOption::ListOption (const string& name,
                         const string& label,
-                        function<optList()> f)
+                        function<valueList()> f)
         : DatastreamOption (name, label, "", false)
 {
         this->type = DatastreamOption::OPTION_LIST;
-        this->setOptionListBuilder (f);
+        this->setValueListBuilder (f);
 }
 
 ListOption::~ListOption()
@@ -198,17 +198,17 @@ ListOption::accept (const DatastreamOptionVisitor& visitor)
 //
 
 void
-ListOption::setOptionListBuilder (function<optList()> f)
+ListOption::setValueListBuilder (function<valueList()> f)
 {
-        this->optionListBuilder = f;
+        this->valueListBuilder = f;
 }
 
-ListOption::optList
-ListOption::getOptionList (void) const
+ListOption::valueList
+ListOption::getValueList (void) const
 {
-        optList l;
+        valueList l;
         try {
-                l = this->optionListBuilder();
+                l = this->valueListBuilder();
         } catch (const std::bad_function_call& e) {
                 // No builder assigned
         }
